@@ -1,0 +1,47 @@
+@model IEnumerable<Inmobiliaria_Peluffo.Models.Propietario>
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<h1>Inicio</h1>
+
+<p>
+    <a asp-action="Create">Cargar Nuevo Propietario</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               D.N.I.
+            </th>
+            <th>
+                Apellido
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.dni)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.apellido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id=item.id }) |
+                @Html.ActionLink("Detalles", "Details", new { id=item.id }) |
+                @Html.ActionLink("Borrar", "Delete", new { id=item.id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
