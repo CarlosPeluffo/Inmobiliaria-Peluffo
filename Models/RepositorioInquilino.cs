@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -6,16 +7,15 @@ using MySql.Data.MySqlClient;
 
 namespace Inmobiliaria_Peluffo.Models
 {
-    public class RepositorioInquilino
+    public class RepositorioInquilino : Base
     {
-        public string ConnectionString = "server=localhost;user=root;password=;database=inmobiliaria;SslMode=none";
-        public RepositorioInquilino()
+        public RepositorioInquilino(IConfiguration configuration) : base(configuration)
         {
             
         }
         public IList<Inquilino> ObtenerTodos(){
             IList<Inquilino> res = new List<Inquilino>();
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT id_inquilino, apellido, nombre, dni, mail, telefono,
                 lugar_trabajo, dni_garante, nombre_garante, telefono_garante, mail_garante 
@@ -27,17 +27,17 @@ namespace Inmobiliaria_Peluffo.Models
                     var reader = comm.ExecuteReader();
                     while(reader.Read()){
                         var i = new Inquilino(){
-                            id = reader.GetInt32(0),
-                            apellido = reader.GetString(1),
-                            nombre = reader.GetString(2),
-                            dni = reader.GetString(3),
-                            mail = reader[nameof(Inquilino.mail)].ToString(),
-                            telefono = reader.GetString(5),
-                            lugarDeTrabajo = reader.GetString(6),
-                            dniGarante = reader.GetString(7),
-                            nombreGarante = reader.GetString(8),
-                            telefonoGarante = reader.GetString(9),
-                            mailGarante = reader["mail_garante"].ToString(),
+                            Id = reader.GetInt32(0),
+                            Apellido = reader.GetString(1),
+                            Nombre = reader.GetString(2),
+                            Dni = reader.GetString(3),
+                            Mail = reader[nameof(Inquilino.Mail)].ToString(),
+                            Telefono = reader.GetString(5),
+                            LugarDeTrabajo = reader.GetString(6),
+                            DniGarante = reader.GetString(7),
+                            NombreGarante = reader.GetString(8),
+                            TelefonoGarante = reader.GetString(9),
+                            MailGarante = reader["mail_garante"].ToString(),
                         };
                         res.Add(i);
                     }
@@ -48,7 +48,7 @@ namespace Inmobiliaria_Peluffo.Models
         }
         public int Alta(Inquilino i){
             int res = -1;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO inquilinos(apellido, nombre, dni, mail, telefono,
                 lugar_trabajo, dni_garante, nombre_garante, telefono_garante, mail_garante)
@@ -58,35 +58,35 @@ namespace Inmobiliaria_Peluffo.Models
                 using (MySqlCommand comm = new MySqlCommand(sql, conn))
                 {
                     comm.CommandType = CommandType.Text;
-                    comm.Parameters.AddWithValue("@apellido", i.apellido);
-                    comm.Parameters.AddWithValue("@nombre", i.nombre);
-                    comm.Parameters.AddWithValue("@dni", i.dni);
-                    comm.Parameters.AddWithValue("@mail", i.mail);
-                    comm.Parameters.AddWithValue("@telefono", i.telefono);
-                    comm.Parameters.AddWithValue("@lugar_trabajo", i.lugarDeTrabajo);
-                    comm.Parameters.AddWithValue("@dni_garante", i.dniGarante);
-                    comm.Parameters.AddWithValue("@nombre_garante", i.nombreGarante);
-                    comm.Parameters.AddWithValue("@telefono_garante", i.telefonoGarante);
-                    comm.Parameters.AddWithValue("@mail_garante", i.mailGarante);
+                    comm.Parameters.AddWithValue("@apellido", i.Apellido);
+                    comm.Parameters.AddWithValue("@nombre", i.Nombre);
+                    comm.Parameters.AddWithValue("@dni", i.Dni);
+                    comm.Parameters.AddWithValue("@mail", i.Mail);
+                    comm.Parameters.AddWithValue("@telefono", i.Telefono);
+                    comm.Parameters.AddWithValue("@lugar_trabajo", i.LugarDeTrabajo);
+                    comm.Parameters.AddWithValue("@dni_garante", i.DniGarante);
+                    comm.Parameters.AddWithValue("@nombre_garante", i.NombreGarante);
+                    comm.Parameters.AddWithValue("@telefono_garante", i.TelefonoGarante);
+                    comm.Parameters.AddWithValue("@mail_garante", i.MailGarante);
 
                     conn.Open();
                     res = Convert.ToInt32(comm.ExecuteScalar());
                     conn.Close();
-                    i.id = res;
+                    i.Id = res;
                 }
             }
             return res;
         }
         public int Baja(Inquilino i){
             int res = -1;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql= @"DELETE FROM inquilinos
                 WHERE id_inquilino = @id";
                 using (MySqlCommand comm = new MySqlCommand(sql, conn))
                 {
                     comm.CommandType = CommandType.Text;
-                    comm.Parameters.AddWithValue("@id", i.id);
+                    comm.Parameters.AddWithValue("@id", i.Id);
                     conn.Open();
                     res = comm.ExecuteNonQuery();
                     conn.Close();
@@ -94,9 +94,9 @@ namespace Inmobiliaria_Peluffo.Models
             }
             return res;
         }
-        public int Modificar(Inquilino i){
+        public int Modificacion(Inquilino i){
             int res = -1;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE inquilinos 
                 SET apellido=@apellido, nombre=@nombre, dni=@dni, mail=@mail, telefono=@telefono,
@@ -107,17 +107,17 @@ namespace Inmobiliaria_Peluffo.Models
                 using (MySqlCommand comm = new MySqlCommand(sql, conn))
                 {
                     comm.CommandType = CommandType.Text;
-                    comm.Parameters.AddWithValue("@apellido", i.apellido);
-                    comm.Parameters.AddWithValue("@nombre", i.nombre);
-                    comm.Parameters.AddWithValue("@dni", i.dni);
-                    comm.Parameters.AddWithValue("@mail", i.mail);
-                    comm.Parameters.AddWithValue("@telefono", i.telefono);
-                    comm.Parameters.AddWithValue("@lugar_trabajo",i.lugarDeTrabajo);
-                    comm.Parameters.AddWithValue("@dni_garante",i.dniGarante);
-                    comm.Parameters.AddWithValue("@nombre_garante",i.nombreGarante);
-                    comm.Parameters.AddWithValue("@telefono_garante",i.telefonoGarante);
-                    comm.Parameters.AddWithValue("@mail_garante",i.mailGarante);
-                    comm.Parameters.AddWithValue("@id", i.id);
+                    comm.Parameters.AddWithValue("@apellido", i.Apellido);
+                    comm.Parameters.AddWithValue("@nombre", i.Nombre);
+                    comm.Parameters.AddWithValue("@dni", i.Dni);
+                    comm.Parameters.AddWithValue("@mail", i.Mail);
+                    comm.Parameters.AddWithValue("@telefono", i.Telefono);
+                    comm.Parameters.AddWithValue("@lugar_trabajo",i.LugarDeTrabajo);
+                    comm.Parameters.AddWithValue("@dni_garante",i.DniGarante);
+                    comm.Parameters.AddWithValue("@nombre_garante",i.NombreGarante);
+                    comm.Parameters.AddWithValue("@telefono_garante",i.TelefonoGarante);
+                    comm.Parameters.AddWithValue("@mail_garante",i.MailGarante);
+                    comm.Parameters.AddWithValue("@id", i.Id);
 
                     conn.Open();
                     res = comm.ExecuteNonQuery();
@@ -128,7 +128,7 @@ namespace Inmobiliaria_Peluffo.Models
         }
         public Inquilino ObtenerPorId(int id){
             Inquilino i = null;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT id_inquilino, apellido, nombre, dni, mail, telefono,
                 lugar_trabajo, dni_garante, nombre_garante, telefono_garante, mail_garante
@@ -142,17 +142,17 @@ namespace Inmobiliaria_Peluffo.Models
                     var reader = comm.ExecuteReader();
                     if(reader.Read()){
                         i = new Inquilino{
-                            id= reader.GetInt32(0),
-                            apellido = reader.GetString(1),
-                            nombre = reader.GetString(2),
-                            dni = reader.GetString(3),
-                            mail = reader[nameof(Inquilino.mail)].ToString(),
-                            telefono = reader.GetString(5),
-                            lugarDeTrabajo = reader.GetString(6),
-                            dniGarante = reader.GetString(7),
-                            nombreGarante = reader.GetString(8),
-                            telefonoGarante = reader.GetString(9),
-                            mailGarante = reader["mail_garante"].ToString(),
+                            Id= reader.GetInt32(0),
+                            Apellido = reader.GetString(1),
+                            Nombre = reader.GetString(2),
+                            Dni = reader.GetString(3),
+                            Mail = reader[nameof(Inquilino.Mail)].ToString(),
+                            Telefono = reader.GetString(5),
+                            LugarDeTrabajo = reader.GetString(6),
+                            DniGarante = reader.GetString(7),
+                            NombreGarante = reader.GetString(8),
+                            TelefonoGarante = reader.GetString(9),
+                            MailGarante = reader["mail_garante"].ToString(),
                         };
                     }
                     conn.Close();

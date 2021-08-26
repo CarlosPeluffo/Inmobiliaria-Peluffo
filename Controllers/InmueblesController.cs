@@ -9,17 +9,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inmobiliaria_Peluffo.Controllers
 {
-    public class PropietariosController : Controller
+    public class InmueblesController : Controller
     {
-        private readonly RepositorioPropietario repositorio;
+        private readonly RepositorioInmueble repositorio;
+        private readonly RepositorioPropietario repProp;
         private readonly IConfiguration configuration;
-
-        public PropietariosController(IConfiguration configuration)
+        public InmueblesController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.repositorio = new RepositorioPropietario(configuration);
+            this.repositorio = new RepositorioInmueble(configuration);
+            this.repProp = new RepositorioPropietario(configuration);
         }
-        // GET: Propietarios
+        // GET: Inmuebles
         public ActionResult Index()
         {
             try
@@ -28,7 +29,7 @@ namespace Inmobiliaria_Peluffo.Controllers
                 ViewBag.Id = TempData["Id"];
                 if(TempData.ContainsKey("Mensaje")){
                     ViewBag.Mensaje = TempData["Mensaje"];
-                } 
+                }
                 return View(lista);
             }
             catch (Exception ex)
@@ -37,10 +38,10 @@ namespace Inmobiliaria_Peluffo.Controllers
                 return View();
                 throw;
             }
-           
+            
         }
 
-        // GET: Propietarios/Details/5
+        // GET: Inmuebles/Details/5
         public ActionResult Details(int id)
         {
             try
@@ -56,53 +57,13 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
         }
 
-        // GET: Propietarios/Create
+        // GET: Inmuebles/Create
         public ActionResult Create()
         {
-           try
-           {
-               return View();
-           }
-           catch (Exception ex)
-           {
-                TempData["Mensaje"] = ex;
-                return RedirectToAction(nameof(Index));
-                throw;
-           } 
-        }
-
-        // POST: Propietarios/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Propietario p)
-        {
             try
             {
-                if(ModelState.IsValid){
-                    repositorio.Alta(p);
-                    TempData["Id"] = p.Id;
-                    return RedirectToAction(nameof(Index));
-                }
-                else{
-                    ViewBag.Mensaje = "No se pudo cargar";
-                    return View(p);
-                }
-                
-            }
-            catch(Exception ex)
-            {
-                TempData["Mensaje"] = ex;
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
-        // GET: Propietarios/Edit/5
-        public ActionResult Edit(int id)
-        {
-            try
-            {
-                var entidad = repositorio.ObtenerPorId(id);
-                return View(entidad);
+                ViewBag.Propietarios = repProp.ObtenerTodos();
+                return View();
             }
             catch (Exception ex)
             {
@@ -113,17 +74,65 @@ namespace Inmobiliaria_Peluffo.Controllers
             
         }
 
-        // POST: Propietarios/Edit/5
+        // POST: Inmuebles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Propietario propietario)
+        public ActionResult Create(Inmueble i)
         {
             try
             {
-                // TODO: Add update logic here
-                repositorio.Modificacion(propietario);
-                TempData["Mensaje"] = "El Propietario se modificó Correctamente";
+                if(ModelState.IsValid){
+                    repositorio.Alta(i);
+                    TempData["Id"] = i.Id;
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    ViewBag.Mensaje = "No se pudo cargar";
+                    ViewBag.Propietarios = repProp.ObtenerTodos();
+                    return View(i);
+                }
+            }
+            catch(Exception ex)
+            {
+                TempData["Mensaje"] = ex;
                 return RedirectToAction(nameof(Index));
+            }
+        }
+
+        // GET: Inmuebles/Edit/5
+        public ActionResult Edit(int id)
+        {
+            try
+            {
+                var entidad = repositorio.ObtenerPorId(id);
+                ViewBag.Propietarios = repProp.ObtenerTodos();
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Mensaje"] = ex;
+                return RedirectToAction(nameof(Index));
+                throw;
+            }
+        }
+
+        // POST: Inmuebles/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Inmueble inmueble)
+        {
+            try
+            {
+                if(ModelState.IsValid){
+                    repositorio.Modificacion(inmueble);
+                    TempData["Mensaje"] = "El Inmueble se modificó con éxito";
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    ViewBag.Mensaje = "No se pudo Editar";
+                    ViewBag.Propietarios = repProp.ObtenerTodos();
+                    return View(inmueble);
+                }
             }
             catch(Exception ex)
             {
@@ -132,7 +141,7 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
         }
 
-        // GET: Propietarios/Delete/5
+        // GET: Inmuebles/Delete/5
         public ActionResult Delete(int id)
         {
             try
@@ -146,19 +155,17 @@ namespace Inmobiliaria_Peluffo.Controllers
                 return RedirectToAction(nameof(Index));
                 throw;
             }
-            
         }
 
-        // POST: Propietarios/Delete/5
+        // POST: Inmuebles/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Propietario propietario)
+        public ActionResult Delete(Inmueble inmueble)
         {
             try
             {
-                // TODO: Add delete logic here
-                repositorio.Baja(propietario);
-                TempData["Mensaje"] = "El propietario se elimino con éxito";
+                repositorio.Baja(inmueble);
+                TempData["Mensaje"] = "El Inmueble se eliminó con éxito";
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)

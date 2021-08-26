@@ -30,12 +30,47 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index">Inquilinos</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
+        <div class="">
+            @if(ViewBag.Id != null){
+                <div class="alert alert-succes alert-dismessible fade show" role="alert">
+                    <strong>La entidad fue cargada con éxito. ID. @ViewBag.Id</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">
+                            <span class="lnr lnr-cross-circle"></span>
+                        </span>
+                    </button>
+                </div>
+            }
+            else if (ViewBag.Mensaje != null){
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <strong>Información:</strong> @ViewBag.Mensaje
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">
+                            <span class="lnr lnr-cross-circle"></span>
+                        </span>
+                    </button>
+                </div>
+            }
+            else if(ViewBag.Error != null){
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>¡Error!</strong> @ViewBag.Error
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">
+                            <span class="lnr lnr-cross-circle"></span>
+                        </span>
+                    </button>
+                </div>
+            }
+        </div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

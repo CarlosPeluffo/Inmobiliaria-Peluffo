@@ -3,50 +3,52 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Inmobiliaria_Peluffo.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Inmobiliaria_Peluffo.Models;
 
 namespace Inmobiliaria_Peluffo.Controllers
 {
-    public class InquilinosController : Controller
+    public class ContratosController : Controller
     {
-        private readonly RepositorioInquilino repositorio;
+        private readonly RepositorioContrato repositorio;
+        private readonly RepositorioInmueble repInm;
+        private readonly RepositorioInquilino repInq;
         private readonly IConfiguration configuration;
-        public InquilinosController(IConfiguration configuration)
+        public ContratosController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.repositorio = new RepositorioInquilino(configuration);
-        }
-        // GET: Inquilinos
+            this.repositorio = new RepositorioContrato(configuration);
+            this.repInm = new RepositorioInmueble(configuration);
+            this.repInq = new RepositorioInquilino(configuration);
+        } 
+        // GET: Contratos
         public ActionResult Index()
         {
-            var lista = repositorio.ObtenerTodos();
-            return View(lista);
+            return View();
         }
 
-        // GET: Inquilinos/Details/5
+        // GET: Contratos/Details/5
         public ActionResult Details(int id)
         {
-            var entidad = repositorio.ObtenerPorId(id);
-            return View(entidad);
+            return View();
         }
 
-        // GET: Inquilinos/Create
+        // GET: Contratos/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Inquilinos/Create
+        // POST: Contratos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inquilino i)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
                 // TODO: Add insert logic here
-                repositorio.Alta(i);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -55,22 +57,21 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
         }
 
-        // GET: Inquilinos/Edit/5
+        // GET: Contratos/Edit/5
         public ActionResult Edit(int id)
         {
-            var entidad = repositorio.ObtenerPorId(id);
-            return View(entidad);
+            return View();
         }
 
-        // POST: Inquilinos/Edit/5
+        // POST: Contratos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Inquilino i)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
             try
             {
                 // TODO: Add update logic here
-                repositorio.Modificacion(i);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -79,22 +80,21 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
         }
 
-        // GET: Inquilinos/Delete/5
+        // GET: Contratos/Delete/5
         public ActionResult Delete(int id)
         {
-            var entidad = repositorio.ObtenerPorId(id);
-            return View(entidad);
+            return View();
         }
 
-        // POST: Inquilinos/Delete/5
+        // POST: Contratos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Inquilino i)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
                 // TODO: Add delete logic here
-                repositorio.Baja(i);
+
                 return RedirectToAction(nameof(Index));
             }
             catch

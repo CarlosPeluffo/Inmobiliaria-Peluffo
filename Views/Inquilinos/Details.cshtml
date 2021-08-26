@@ -11,74 +11,74 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            ID.
+            @Html.DisplayNameFor(model => model.Id)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.id)
+            @Html.DisplayFor(model => model.Id)
         </dd>
         <dt class = "col-sm-2">
-            D.N.I.
+            @Html.DisplayNameFor(model => model.Dni)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.dni)
+            @Html.DisplayFor(model => model.Dni)
         </dd>
         <dt class = "col-sm-2">
-            Apellido
+            @Html.DisplayNameFor(model => model.Apellido)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.apellido)
+            @Html.DisplayFor(model => model.Apellido)
         </dd>
         <dt class = "col-sm-2">
-            Nombre
+            @Html.DisplayNameFor(model => model.Nombre)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.nombre)
+            @Html.DisplayFor(model => model.Nombre)
         </dd>
         <dt class = "col-sm-2">
-            E-Mail
+            @Html.DisplayNameFor(model => model.Mail)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.mail)
+            @Html.DisplayFor(model => model.Mail)
         </dd>
         <dt class = "col-sm-2">
-            Teléfono
+            @Html.DisplayNameFor(model => model.Telefono)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.telefono)
+            @Html.DisplayFor(model => model.Telefono)
         </dd>
         <dt class = "col-sm-2">
-            Lugar de Trabajo
+            @Html.DisplayNameFor(model => model.LugarDeTrabajo)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.lugarDeTrabajo)
+            @Html.DisplayFor(model => model.LugarDeTrabajo)
         </dd>
         <dt class = "col-sm-2">
-            D.N.I. del Garante
+            @Html.DisplayNameFor(model => model.DniGarante)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.dniGarante)
+            @Html.DisplayFor(model => model.DniGarante)
         </dd>
         <dt class = "col-sm-2">
-            Nombre del Garante
+            @Html.DisplayNameFor(model => model.NombreGarante)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.nombreGarante)
+            @Html.DisplayFor(model => model.NombreGarante)
         </dd>
         <dt class = "col-sm-2">
-            Teléfono del Garante
+            @Html.DisplayNameFor(model => model.TelefonoGarante)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.telefonoGarante)
+            @Html.DisplayFor(model => model.TelefonoGarante)
         </dd>
         <dt class = "col-sm-2">
-            E-Mail del Garante
+            @Html.DisplayNameFor(model => model.MailGarante)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.mailGarante)
+            @Html.DisplayFor(model => model.MailGarante)
         </dd>
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Editar", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
     <a asp-action="Index">Volver a la lista</a>
 </div>

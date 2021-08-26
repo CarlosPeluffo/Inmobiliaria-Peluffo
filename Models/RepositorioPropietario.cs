@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System;
 using System.Reflection.Metadata;
@@ -7,16 +8,15 @@ using MySql.Data.MySqlClient;
 
 namespace Inmobiliaria_Peluffo.Models
 {
-    public class RepositorioPropietario
+    public class RepositorioPropietario : Base
     {
-        public string ConnectionString = "server=localhost;user=root;password=;database=inmobiliaria;SslMode=none";
-        public RepositorioPropietario()
+        public RepositorioPropietario(IConfiguration configuration) : base(configuration)
         {
             
         }
-        public IList<Propietario> obtenerTodos(){
+        public IList<Propietario> ObtenerTodos(){
             IList<Propietario> res = new List<Propietario>();
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT id_propietario, apellido, nombre, dni, mail, telefono
                 FROM propietarios";
@@ -27,12 +27,12 @@ namespace Inmobiliaria_Peluffo.Models
                     var reader = comm.ExecuteReader();
                     while(reader.Read()){
                         var p = new Propietario{
-                            id = reader.GetInt32(0),
-                            apellido = reader.GetString(1),
-                            nombre = reader.GetString(2),
-                            dni = reader.GetString(3),
-                            mail = reader[nameof(Propietario.mail)].ToString(),
-                            telefono = reader.GetString(5),
+                            Id = reader.GetInt32(0),
+                            Apellido = reader.GetString(1),
+                            Nombre = reader.GetString(2),
+                            Dni = reader.GetString(3),
+                            Mail = reader[nameof(Propietario.Mail)].ToString(),
+                            Telefono = reader.GetString(5),
                         };
                         res.Add(p);
                     }
@@ -43,7 +43,7 @@ namespace Inmobiliaria_Peluffo.Models
         }
         public int Alta(Propietario p){
             int res = -1;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString) )
+            using (MySqlConnection conn = new MySqlConnection(connectionString) )
             {
                 string sql = @"INSERT INTO propietarios (apellido, nombre, dni, mail, telefono)
                 VALUES(@apellido, @nombre, @dni, @mail, @telefono);
@@ -51,29 +51,29 @@ namespace Inmobiliaria_Peluffo.Models
                 using (MySqlCommand comm = new MySqlCommand(sql, conn))
                 {
                     comm.CommandType = CommandType.Text;
-                    comm.Parameters.AddWithValue("@apellido", p.apellido);
-                    comm.Parameters.AddWithValue("@nombre", p.nombre);
-                    comm.Parameters.AddWithValue("@dni", p.dni);
-                    comm.Parameters.AddWithValue("@mail", p.mail);
-                    comm.Parameters.AddWithValue("@telefono", p.telefono);
+                    comm.Parameters.AddWithValue("@apellido", p.Apellido);
+                    comm.Parameters.AddWithValue("@nombre", p.Nombre);
+                    comm.Parameters.AddWithValue("@dni", p.Dni);
+                    comm.Parameters.AddWithValue("@mail", p.Mail);
+                    comm.Parameters.AddWithValue("@telefono", p.Telefono);
                     conn.Open();
                     res = Convert.ToInt32(comm.ExecuteScalar());
                     conn.Close();
-                    p.id = res;
+                    p.Id = res;
                 }
             }
             return res;
         }
         public int Baja(Propietario p){
             int res = -1;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"DELETE FROM propietarios
                 WHERE id_propietario = @id";
                 using (MySqlCommand comm = new MySqlCommand(sql, conn))
                 {
                     comm.CommandType = CommandType.Text;
-                    comm.Parameters.AddWithValue("@id", p.id);
+                    comm.Parameters.AddWithValue("@id", p.Id);
                     conn.Open();
                     res = comm.ExecuteNonQuery();
                     conn.Close();
@@ -83,7 +83,7 @@ namespace Inmobiliaria_Peluffo.Models
         }
         public int Modificacion(Propietario p){
             int res = -1;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE propietarios 
                 SET apellido=@apellido, nombre=@nombre, dni=@dni, mail=@mail, telefono=@telefono
@@ -91,12 +91,12 @@ namespace Inmobiliaria_Peluffo.Models
                 using (MySqlCommand comm = new MySqlCommand(sql, conn))
                 {
                     comm.CommandType = CommandType.Text;
-                    comm.Parameters.AddWithValue("@apellido", p.apellido);
-                    comm.Parameters.AddWithValue("@nombre", p.nombre);
-                    comm.Parameters.AddWithValue("@dni", p.dni);
-                    comm.Parameters.AddWithValue("@mail", p.mail);
-                    comm.Parameters.AddWithValue("@telefono", p.telefono);
-                    comm.Parameters.AddWithValue("@id", p.id);
+                    comm.Parameters.AddWithValue("@apellido", p.Apellido);
+                    comm.Parameters.AddWithValue("@nombre", p.Nombre);
+                    comm.Parameters.AddWithValue("@dni", p.Dni);
+                    comm.Parameters.AddWithValue("@mail", p.Mail);
+                    comm.Parameters.AddWithValue("@telefono", p.Telefono);
+                    comm.Parameters.AddWithValue("@id", p.Id);
                     conn.Open();
                     res = comm.ExecuteNonQuery();
                     conn.Close();
@@ -106,7 +106,7 @@ namespace Inmobiliaria_Peluffo.Models
         }
         public Propietario ObtenerPorId(int id){
             Propietario p = null;
-            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT id_propietario, apellido, nombre, dni, mail, telefono
                 FROM propietarios
@@ -119,12 +119,12 @@ namespace Inmobiliaria_Peluffo.Models
                     var reader = comm.ExecuteReader();
                     if(reader.Read()){
                         p = new Propietario{
-                            id = reader.GetInt32(0),
-                            apellido = reader.GetString(1),
-                            nombre = reader.GetString(2),
-                            dni = reader.GetString(3),
-                            mail = reader[nameof(Propietario.mail)].ToString(),
-                            telefono = reader.GetString(5),
+                            Id = reader.GetInt32(0),
+                            Apellido = reader.GetString(1),
+                            Nombre = reader.GetString(2),
+                            Dni = reader.GetString(3),
+                            Mail = reader[nameof(Propietario.Mail)].ToString(),
+                            Telefono = reader.GetString(5),
                         };
                     }
                     conn.Close();

@@ -1,12 +1,23 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 namespace Inmobiliaria_Peluffo.Models
 {
     public class Propietario
     {
-        public int id { get; set; }
-        public string apellido { get; set; }
-        public string nombre { get; set; }
-        public string dni { get; set; }
-        public string mail { get; set; }
-        public string telefono { get; set; }
+        [Display(Name = "ID.")]
+        public int Id { get; set; }
+        [Required]
+        public string Apellido { get; set; }
+        [Required]
+        public string Nombre { get; set; }
+        [Required]
+        [Display(Name = "D.N.I.")]
+        public string Dni { get; set; }
+        [EmailAddress]
+        [Display(Name = "E-Mail")] 
+        public string Mail { get; set; }
+        [Required, Phone]
+        [Display(Name = "Teléfono")]
+        public string Telefono { get; set; }
     }
 }
