@@ -71,7 +71,7 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 ViewBag.Inquilinos = repInq.ObtenerTodos();
-                ViewBag.Inmuebles = repInm.ObtenerTodos();
+                ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
                 return View();
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace Inmobiliaria_Peluffo.Controllers
                 else{
                     ViewBag.Mensaje = "No se pudo cargar";
                     ViewBag.Inquilinos = repInq.ObtenerTodos();
-                    ViewBag.Inmuebles = repInm.ObtenerTodos();
+                    ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
                     return View(c);
                 }
             }
@@ -115,7 +115,7 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 ViewBag.Inquilinos = repInq.ObtenerTodos();
-                ViewBag.Inmuebles = repInm.ObtenerTodos();
+                ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
                 var entidad = repositorio.ObtenerPorId(id);
                 return View(entidad);
             }
@@ -142,7 +142,7 @@ namespace Inmobiliaria_Peluffo.Controllers
                 else{
                     ViewBag.Mensaje = "No se pudo Editar";
                     ViewBag.Inquilinos = repInq.ObtenerTodos();
-                    ViewBag.Inmuebles = repInm.ObtenerTodos();
+                    ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
                     return View(contrato);
                 }
             }

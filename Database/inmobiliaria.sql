@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2021 a las 19:55:48
+-- Tiempo de generación: 28-08-2021 a las 01:47:24
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -29,12 +29,20 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `contratos` (
   `id_contrato` int(11) NOT NULL,
-  `fecha_inicio` datetime NOT NULL,
-  `fecha_fin` datetime NOT NULL,
+  `fecha_inicio` date NOT NULL,
+  `fecha_fin` date NOT NULL,
   `monto` double NOT NULL,
   `id_inquilino` int(11) NOT NULL,
   `id_inmueble` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `contratos`
+--
+
+INSERT INTO `contratos` (`id_contrato`, `fecha_inicio`, `fecha_fin`, `monto`, `id_inquilino`, `id_inmueble`) VALUES
+(5, '2021-08-27', '2021-10-28', 25000, 2, 2),
+(6, '2021-08-31', '2021-11-28', 25000, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -58,8 +66,9 @@ CREATE TABLE `inmuebles` (
 --
 
 INSERT INTO `inmuebles` (`id_inmueble`, `id_propietario`, `direccion`, `uso`, `tipo`, `cant_ambientes`, `precio`, `estado`) VALUES
-(1, 1, 'Potosi 375', 'Residencial', 'Casa', 5, 1500000, 1),
-(2, 1, 'Potosi 399', 'Residencial', 'Casa', 6, 1500000, 1);
+(1, 1, 'Potosi 375', 'Residencial', 'Casa', 5, 1500000, 0),
+(2, 1, 'Potosi 399', 'Residencial', 'Casa', 6, 1500000, 0),
+(4, 1, 'Algo 123', 'Comercial', 'Salón', 1, 50000, 1);
 
 -- --------------------------------------------------------
 
@@ -174,13 +183,13 @@ ALTER TABLE `propietarios`
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `id_contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  MODIFY `id_inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `inquilinos`
@@ -208,14 +217,14 @@ ALTER TABLE `propietarios`
 -- Filtros para la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  ADD CONSTRAINT `contratos_ibfk_1` FOREIGN KEY (`id_inquilino`) REFERENCES `inquilinos` (`id_inquilino`) ON DELETE CASCADE,
-  ADD CONSTRAINT `contratos_ibfk_2` FOREIGN KEY (`id_inmueble`) REFERENCES `inmuebles` (`id_inmueble`) ON DELETE CASCADE;
+  ADD CONSTRAINT `contratos_ibfk_1` FOREIGN KEY (`id_inquilino`) REFERENCES `inquilinos` (`id_inquilino`),
+  ADD CONSTRAINT `contratos_ibfk_2` FOREIGN KEY (`id_inmueble`) REFERENCES `inmuebles` (`id_inmueble`);
 
 --
 -- Filtros para la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  ADD CONSTRAINT `inmuebles_ibfk_1` FOREIGN KEY (`id_propietario`) REFERENCES `propietarios` (`id_propietario`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `inmuebles_ibfk_1` FOREIGN KEY (`id_propietario`) REFERENCES `propietarios` (`id_propietario`);
 
 --
 -- Filtros para la tabla `pagos`

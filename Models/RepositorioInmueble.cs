@@ -153,5 +153,43 @@ namespace Inmobiliaria_Peluffo.Models
             }
             return i;
         }
+        public IList<Inmueble> ObtenerTodosActivos(){
+            IList<Inmueble> lista = new List<Inmueble>();
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql = @"SELECT id_inmueble, i.id_propietario, direccion, uso, tipo, 
+                    cant_ambientes, precio, estado, 
+                    prop.nombre, prop.apellido, prop.dni
+                    FROM inmuebles i 
+                    INNER JOIN propietarios prop ON i.id_propietario = prop.id_propietario
+                    WHERE estado=true";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    conn.Open();
+                    var reader = comm.ExecuteReader();
+                    while(reader.Read()){
+                        Inmueble i = new Inmueble{
+                            Id = reader.GetInt32(0),
+                            PropietarioId = reader.GetInt32(1),
+                            Direccion = reader.GetString(2),
+                            Uso = reader.GetString(3),
+                            Tipo = reader.GetString(4),
+                            Ambientes = reader.GetInt32(5),
+                            Precio = reader.GetDouble(6),
+                            Estado = reader.GetBoolean(7),
+                            Propietario = new Propietario{
+                                Id = reader.GetInt32(1),
+                                Apellido = reader.GetString(8),
+                                Nombre = reader.GetString(9),
+                                Dni = reader.GetString(10)
+                            }
+
+                        };
+                        lista.Add(i);
+                    }
+                    conn.Close();
+                }
+            }
+            return lista;
+        }
     }
 }

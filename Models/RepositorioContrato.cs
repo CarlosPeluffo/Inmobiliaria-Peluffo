@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Collections.Generic;
@@ -18,7 +19,10 @@ namespace Inmobiliaria_Peluffo.Models
                 string sql =@"INSERT INTO contratos(fecha_inicio, fecha_fin, monto,
                 id_inquilino, id_inmueble)
                 VALUES(@inicio, @fin, @monto, @inquilino, @inmueble);
-                SELECT last_insert_id();";
+                SELECT last_insert_id();
+                UPDATE inmuebles SET estado=false
+                WHERE id_inmueble =@cambio;
+                ";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     comm.Parameters.AddWithValue("@inicio", c.FechaInicio);
@@ -26,6 +30,7 @@ namespace Inmobiliaria_Peluffo.Models
                     comm.Parameters.AddWithValue("@monto", c.Monto);
                     comm.Parameters.AddWithValue("@inquilino", c.InquilinoId);
                     comm.Parameters.AddWithValue("@inmueble", c.InmuebleId);
+                    comm.Parameters.AddWithValue("@cambio", c.InmuebleId);
                     conn.Open();
                     res = Convert.ToInt32(comm.ExecuteScalar());
                     c.Id = res;
@@ -37,10 +42,13 @@ namespace Inmobiliaria_Peluffo.Models
         public int Baja(Contrato c){
             int res = -1;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
-                string sql =@"DELETE FROM contratos WHERE id_contrato=@id";
+                string sql =@"DELETE FROM contratos WHERE id_contrato=@id;
+                    UPDATE inmuebles SET estado = true
+                    WHERE id_inmueble=@cambio";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     comm.Parameters.AddWithValue("@id", c.Id);
+                    comm.Parameters.AddWithValue("@cambio", c.InmuebleId);
                     conn.Open();
                     res = comm.ExecuteNonQuery();
                     conn.Close();
@@ -51,18 +59,27 @@ namespace Inmobiliaria_Peluffo.Models
         public int Modificacion(Contrato c){
             int res = -1;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
-                string sql =@"UPDATE contratos
-                SET fecha_inicio=@inicio, fecha_fin=@fin, monto=@monto, 
-                id_inquilino=@inquilino, id_inmueble=@inmueble
-                WHERE id_contrato=@id";
+                string sql =@"UPDATE inmuebles SET estado = true
+                            WHERE id_inmueble = (SELECT id_inmueble
+					                            FROM contratos
+					                            WHERE id_contrato =@idC );
+                    UPDATE contratos
+                    SET fecha_inicio=@inicio, fecha_fin=@fin, monto=@monto, 
+                    id_inquilino=@inquilino, id_inmueble=@inmueble
+                    WHERE id_contrato=@id;
+                    UPDATE inmuebles
+                    SET estado=false
+                    WHERE id_inmueble=@cambiar";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
+                    comm.Parameters.AddWithValue("@idC", c.Id);
                     comm.Parameters.AddWithValue("@inicio",c.FechaInicio);
                     comm.Parameters.AddWithValue("@fin",c.FechaFin);
                     comm.Parameters.AddWithValue("@monto",c.Monto);
                     comm.Parameters.AddWithValue("@inquilino",c.InquilinoId);
                     comm.Parameters.AddWithValue("@inmueble",c.InmuebleId);
                     comm.Parameters.AddWithValue("@id",c.Id);
+                    comm.Parameters.AddWithValue("@cambiar", c.InmuebleId);
                     conn.Open();
                     res = comm.ExecuteNonQuery();
                     conn.Close();

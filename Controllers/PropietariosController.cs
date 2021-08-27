@@ -169,7 +169,8 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch(Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["Mensaje"] = "El Propietario está asociado a un Inmueble. Imposible Eliminar";
+                //TempData["Error"] = ex.Message;
                 TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
             }
