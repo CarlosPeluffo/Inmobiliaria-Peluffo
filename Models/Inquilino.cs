@@ -3,8 +3,8 @@ namespace Inmobiliaria_Peluffo.Models
 {
     public class Inquilino
     {
-        public int Id { get; set; }
         [Display(Name = "ID.")]
+        public int Id { get; set; }
         [Required]
         public string Apellido { get; set; }
         [Required]

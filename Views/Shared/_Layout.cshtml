@@ -33,6 +33,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -41,7 +44,7 @@
     <div class="container">
         <div class="">
             @if(ViewBag.Id != null){
-                <div class="alert alert-succes alert-dismessible fade show" role="alert">
+                <div class="alert alert-success alert-dismessible fade show" role="alert">
                     <strong>La entidad fue cargada con éxito. ID. @ViewBag.Id</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">
@@ -70,6 +73,20 @@
                     </button>
                 </div>
             }
+            else if (!String.IsNullOrWhiteSpace(ViewBag.Error)){
+				<environment names="Development">
+					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						<strong>¡Error!</strong> Ocurrió: @ViewBag.Error
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+						</button>
+						<a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
+						<div class="collapse multi-collapse" id="multiCollapseExample1">
+							@ViewBag.StackTrace
+						</div>
+					</div>
+				</environment>
+			}
         </div>
         <main role="main" class="pb-3">
             @RenderBody()

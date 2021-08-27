@@ -21,21 +21,58 @@ namespace Inmobiliaria_Peluffo.Controllers
         // GET: Inquilinos
         public ActionResult Index()
         {
-            var lista = repositorio.ObtenerTodos();
-            return View(lista);
+            try
+            {
+                var lista = repositorio.ObtenerTodos();
+                ViewBag.Id = TempData["Id"];
+                if(TempData.ContainsKey("Mensaje")){
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                }
+                if(TempData.ContainsKey("Error")){
+                    ViewBag.Mensaje = TempData["Error"];
+                }
+                if(TempData.ContainsKey("StackTrate")){
+                    ViewBag.StackTrate = TempData["StackTrate"];
+                }
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                ViewBag.StrackTrate = ex.StackTrace;
+                return View();
+            }
         }
 
         // GET: Inquilinos/Details/5
         public ActionResult Details(int id)
         {
-            var entidad = repositorio.ObtenerPorId(id);
-            return View(entidad);
+            try
+            {
+                var entidad = repositorio.ObtenerPorId(id);
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Inquilinos/Create
         public ActionResult Create()
         {
-            return View();
+            try
+            {
+               return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            } 
         }
 
         // POST: Inquilinos/Create
@@ -45,21 +82,39 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
-                repositorio.Alta(i);
-                return RedirectToAction(nameof(Index));
+                if(ModelState.IsValid){
+                    repositorio.Alta(i);
+                    TempData["Id"] = i.Id;
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    ViewBag.Mensaje = "No se pudo cargar";
+                    return View(i);
+                }
+                
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: Inquilinos/Edit/5
         public ActionResult Edit(int id)
         {
-            var entidad = repositorio.ObtenerPorId(id);
-            return View(entidad);
+            try
+            {
+                var entidad = repositorio.ObtenerPorId(id);
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Inquilinos/Edit/5
@@ -69,21 +124,32 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                // TODO: Add update logic here
                 repositorio.Modificacion(i);
+                TempData["Mensaje"] = "El Inquilino se modificó Correctamente";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: Inquilinos/Delete/5
         public ActionResult Delete(int id)
         {
-            var entidad = repositorio.ObtenerPorId(id);
-            return View(entidad);
+            try
+            {
+                var entidad = repositorio.ObtenerPorId(id);
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Inquilinos/Delete/5
@@ -93,13 +159,15 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
                 repositorio.Baja(i);
+                TempData["Mensaje"] = "El Inquilino se elimino con éxito";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
     }

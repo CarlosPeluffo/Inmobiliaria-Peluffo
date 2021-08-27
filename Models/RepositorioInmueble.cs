@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Xml.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Collections;
@@ -16,8 +18,10 @@ namespace Inmobiliaria_Peluffo.Models
             IList<Inmueble> lista = new List<Inmueble>();
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql = @"SELECT id_inmueble, i.id_propietario, direccion, uso, tipo, 
-                cant_ambientes, precio, estado, prop.nombre, prop.apellido
-                FROM inmuebles i JOIN propietarios prop ON i.id_propietario = prop.id_propietario";
+                    cant_ambientes, precio, estado, 
+                    prop.nombre, prop.apellido, prop.dni
+                    FROM inmuebles i 
+                    INNER JOIN propietarios prop ON i.id_propietario = prop.id_propietario";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     conn.Open();
@@ -36,6 +40,7 @@ namespace Inmobiliaria_Peluffo.Models
                                 Id = reader.GetInt32(1),
                                 Apellido = reader.GetString(8),
                                 Nombre = reader.GetString(9),
+                                Dni = reader.GetString(10)
                             }
 
                         };
@@ -114,10 +119,12 @@ namespace Inmobiliaria_Peluffo.Models
         public Inmueble ObtenerPorId(int id){
             Inmueble i = null;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
-                string sql = @"SELECT id_inmueble, id_propietario, direccion, uso, tipo,
-                cant_ambientes, precio, estado
-                FROM inmuebles
-                WHERE id_inmueble=@id";
+                string sql = @"SELECT id_inmueble, i.id_propietario, direccion, uso, tipo,
+                    cant_ambientes, precio, estado,
+                    prop.nombre, prop.apellido, prop.dni
+                    FROM inmuebles i
+                    INNER JOIN propietarios prop ON prop.id_propietario = i.id_propietario
+                    WHERE id_inmueble=@id";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     comm.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
@@ -132,7 +139,13 @@ namespace Inmobiliaria_Peluffo.Models
                             Tipo = reader.GetString(4),
                             Ambientes = reader.GetInt32(5),
                             Precio = reader.GetDouble(6),
-                            Estado = reader.GetBoolean(7)
+                            Estado = reader.GetBoolean(7),
+                            Propietario = new Propietario{
+                                Id = reader.GetInt32(1),
+                                Nombre = reader.GetString(8),
+                                Apellido = reader.GetString(9),
+                                Dni = reader.GetString(10)
+                            }
                         };
                     }
                     conn.Close();

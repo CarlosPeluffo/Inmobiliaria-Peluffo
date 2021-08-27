@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-08-2021 a las 10:20:03
+-- Tiempo de generación: 27-08-2021 a las 19:55:48
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -52,6 +52,14 @@ CREATE TABLE `inmuebles` (
   `precio` double NOT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `inmuebles`
+--
+
+INSERT INTO `inmuebles` (`id_inmueble`, `id_propietario`, `direccion`, `uso`, `tipo`, `cant_ambientes`, `precio`, `estado`) VALUES
+(1, 1, 'Potosi 375', 'Residencial', 'Casa', 5, 1500000, 1),
+(2, 1, 'Potosi 399', 'Residencial', 'Casa', 6, 1500000, 1);
 
 -- --------------------------------------------------------
 
@@ -134,6 +142,7 @@ ALTER TABLE `contratos`
 --
 ALTER TABLE `inmuebles`
   ADD PRIMARY KEY (`id_inmueble`),
+  ADD UNIQUE KEY `direccion` (`direccion`),
   ADD KEY `id_propietario` (`id_propietario`);
 
 --
@@ -165,19 +174,19 @@ ALTER TABLE `propietarios`
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `id_contrato` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  MODIFY `id_inmueble` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `inquilinos`
 --
 ALTER TABLE `inquilinos`
-  MODIFY `id_inquilino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_inquilino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos`
@@ -189,7 +198,7 @@ ALTER TABLE `pagos`
 -- AUTO_INCREMENT de la tabla `propietarios`
 --
 ALTER TABLE `propietarios`
-  MODIFY `id_propietario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_propietario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
@@ -199,20 +208,20 @@ ALTER TABLE `propietarios`
 -- Filtros para la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  ADD CONSTRAINT `contratos_ibfk_1` FOREIGN KEY (`id_inquilino`) REFERENCES `inquilinos` (`id_inquilino`),
-  ADD CONSTRAINT `contratos_ibfk_2` FOREIGN KEY (`id_inmueble`) REFERENCES `inmuebles` (`id_inmueble`);
+  ADD CONSTRAINT `contratos_ibfk_1` FOREIGN KEY (`id_inquilino`) REFERENCES `inquilinos` (`id_inquilino`) ON DELETE CASCADE,
+  ADD CONSTRAINT `contratos_ibfk_2` FOREIGN KEY (`id_inmueble`) REFERENCES `inmuebles` (`id_inmueble`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  ADD CONSTRAINT `inmuebles_ibfk_1` FOREIGN KEY (`id_propietario`) REFERENCES `propietarios` (`id_propietario`);
+  ADD CONSTRAINT `inmuebles_ibfk_1` FOREIGN KEY (`id_propietario`) REFERENCES `propietarios` (`id_propietario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  ADD CONSTRAINT `pagos_ibfk_1` FOREIGN KEY (`id_contrato`) REFERENCES `contratos` (`id_contrato`);
+  ADD CONSTRAINT `pagos_ibfk_1` FOREIGN KEY (`id_contrato`) REFERENCES `contratos` (`id_contrato`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

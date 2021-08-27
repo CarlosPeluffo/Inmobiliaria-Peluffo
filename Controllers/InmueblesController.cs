@@ -30,13 +30,19 @@ namespace Inmobiliaria_Peluffo.Controllers
                 if(TempData.ContainsKey("Mensaje")){
                     ViewBag.Mensaje = TempData["Mensaje"];
                 }
+                if(TempData.ContainsKey("Error")){
+                    ViewBag.Mensaje = TempData["Error"];
+                }
+                if(TempData.ContainsKey("StackTrate")){
+                    ViewBag.StackTrate = TempData["StackTrate"];
+                }
                 return View(lista);
             }
             catch (Exception ex)
             {
-                ViewBag.Mensaje = ex;
+                ViewBag.Error = ex.Message;
+                ViewBag.StrackTrate = ex.StackTrace;
                 return View();
-                throw;
             }
             
         }
@@ -51,9 +57,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
         }
 
@@ -67,9 +73,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
             
         }
@@ -94,7 +100,8 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch(Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -110,9 +117,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
         }
 
@@ -136,8 +143,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch(Exception ex)
             {
-                ViewBag.Mensaje = ex;
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -151,9 +159,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
         }
 
@@ -170,8 +178,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch(Exception ex)
             {
-                ViewBag.Mensaje = ex;
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
     }

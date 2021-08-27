@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System;
@@ -31,7 +32,7 @@ namespace Inmobiliaria_Peluffo.Models
                             Apellido = reader.GetString(1),
                             Nombre = reader.GetString(2),
                             Dni = reader.GetString(3),
-                            Mail = reader[nameof(Inquilino.Mail)].ToString(),
+                            Mail = reader[nameof(Inquilino.Mail)] == DBNull.Value ? null : reader.GetString(4),
                             Telefono = reader.GetString(5),
                             LugarDeTrabajo = reader.GetString(6),
                             DniGarante = reader.GetString(7),

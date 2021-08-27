@@ -25,81 +25,167 @@ namespace Inmobiliaria_Peluffo.Controllers
         // GET: Contratos
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                var lista = repositorio.ObtenerTodos();
+                ViewBag.Id = TempData["Id"];
+                if(TempData.ContainsKey("Mensaje")){
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                }
+                if(TempData.ContainsKey("Error")){
+                    ViewBag.Mensaje = TempData["Error"];
+                }
+                if(TempData.ContainsKey("StackTrate")){
+                    ViewBag.StackTrate = TempData["StackTrate"];
+                }
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                return View();
+            }
+            
         }
 
         // GET: Contratos/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            try
+            {
+                var entidad = repositorio.ObtenerPorId(id);
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Contratos/Create
         public ActionResult Create()
         {
-            return View();
+            try
+            {
+                ViewBag.Inquilinos = repInq.ObtenerTodos();
+                ViewBag.Inmuebles = repInm.ObtenerTodos();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Contratos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Contrato c)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                if(ModelState.IsValid){
+                    repositorio.Alta(c);
+                    TempData["Id"] = c.Id;
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    ViewBag.Mensaje = "No se pudo cargar";
+                    ViewBag.Inquilinos = repInq.ObtenerTodos();
+                    ViewBag.Inmuebles = repInm.ObtenerTodos();
+                    return View(c);
+                }
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: Contratos/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            try
+            {
+                ViewBag.Inquilinos = repInq.ObtenerTodos();
+                ViewBag.Inmuebles = repInm.ObtenerTodos();
+                var entidad = repositorio.ObtenerPorId(id);
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Contratos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Contrato contrato)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                if(ModelState.IsValid){
+                    repositorio.Modificacion(contrato);
+                    TempData["Mensaje"] = "El Contrato se modificó con éxito";
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    ViewBag.Mensaje = "No se pudo Editar";
+                    ViewBag.Inquilinos = repInq.ObtenerTodos();
+                    ViewBag.Inmuebles = repInm.ObtenerTodos();
+                    return View(contrato);
+                }
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: Contratos/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            try
+            {
+                var entidad = repositorio.ObtenerPorId(id);
+                return View(entidad);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Contratos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Contrato contrato )
         {
             try
             {
-                // TODO: Add delete logic here
-
+                repositorio.Baja(contrato);
+                TempData["Mensaje"] = "El Contrato se eliminó con éxito";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
     }

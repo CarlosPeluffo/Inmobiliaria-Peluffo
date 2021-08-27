@@ -28,14 +28,20 @@ namespace Inmobiliaria_Peluffo.Controllers
                 ViewBag.Id = TempData["Id"];
                 if(TempData.ContainsKey("Mensaje")){
                     ViewBag.Mensaje = TempData["Mensaje"];
-                } 
+                }
+                if(TempData.ContainsKey("Error")){
+                    ViewBag.Mensaje = TempData["Error"];
+                }
+                if(TempData.ContainsKey("StackTrate")){
+                    ViewBag.StackTrate = TempData["StackTrate"];
+                }
                 return View(lista);
             }
             catch (Exception ex)
             {
-                ViewBag.Mensaje = ex;
+                ViewBag.Error = ex.Message;
+                ViewBag.StrackTrate = ex.StackTrace;
                 return View();
-                throw;
             }
            
         }
@@ -50,9 +56,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
         }
 
@@ -65,9 +71,9 @@ namespace Inmobiliaria_Peluffo.Controllers
            }
            catch (Exception ex)
            {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
            } 
         }
 
@@ -91,7 +97,8 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch(Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -106,9 +113,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
             
         }
@@ -120,15 +127,15 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                // TODO: Add update logic here
                 repositorio.Modificacion(propietario);
                 TempData["Mensaje"] = "El Propietario se modificó Correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
             {
-                ViewBag.Mensaje = ex;
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -142,9 +149,9 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = ex;
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
-                throw;
             }
             
         }
@@ -156,15 +163,15 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
                 repositorio.Baja(propietario);
-                TempData["Mensaje"] = "El propietario se elimino con éxito";
+                TempData["Mensaje"] = "El Propietario se elimino con éxito";
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
             {
-                ViewBag.Mensaje = ex;
-                return View();
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
     }
