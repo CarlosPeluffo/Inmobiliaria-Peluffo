@@ -6,12 +6,14 @@ namespace Inmobiliaria_Peluffo.Models
 {
     public class Contrato
     {
-        [Display(Name = "ID:")]
+        [Display(Name = "ID.")]
         public int Id { get; set; }
         [Required]
+        [DataType(DataType.Date)]
         [Display(Name = "Fecha de Inicio")]
         public DateTime FechaInicio { get; set; }
         [Required]
+        [DataType(DataType.Date)]
         [Display(Name = "Fecha de Fin")]
         public DateTime FechaFin { get; set;}
         [Required]
