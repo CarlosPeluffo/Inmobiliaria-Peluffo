@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-08-2021 a las 01:47:24
+-- Tiempo de generación: 04-09-2021 a las 04:46:14
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -107,10 +107,19 @@ INSERT INTO `inquilinos` (`id_inquilino`, `apellido`, `nombre`, `dni`, `mail`, `
 CREATE TABLE `pagos` (
   `id_pago` int(11) NOT NULL,
   `nro_pago` int(11) NOT NULL,
-  `fecha_pago` datetime NOT NULL,
+  `fecha_pago` date NOT NULL,
   `monto` double NOT NULL,
   `id_contrato` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `pagos`
+--
+
+INSERT INTO `pagos` (`id_pago`, `nro_pago`, `fecha_pago`, `monto`, `id_contrato`) VALUES
+(1, 1, '2021-09-02', 25000, 6),
+(4, 2, '2021-09-02', 25004, 6),
+(9, 3, '2021-09-03', 25010, 6);
 
 -- --------------------------------------------------------
 
@@ -166,6 +175,7 @@ ALTER TABLE `inquilinos`
 --
 ALTER TABLE `pagos`
   ADD PRIMARY KEY (`id_pago`),
+  ADD UNIQUE KEY `nro_pago` (`nro_pago`),
   ADD KEY `id_contrato` (`id_contrato`);
 
 --
@@ -201,7 +211,7 @@ ALTER TABLE `inquilinos`
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`
@@ -230,7 +240,7 @@ ALTER TABLE `inmuebles`
 -- Filtros para la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  ADD CONSTRAINT `pagos_ibfk_1` FOREIGN KEY (`id_contrato`) REFERENCES `contratos` (`id_contrato`) ON DELETE CASCADE;
+  ADD CONSTRAINT `pagos_ibfk_1` FOREIGN KEY (`id_contrato`) REFERENCES `contratos` (`id_contrato`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

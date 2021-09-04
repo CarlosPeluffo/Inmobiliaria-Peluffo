@@ -46,6 +46,6 @@
     
     <form asp-action="Delete">
         <input type="submit" value="Borrar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la Lista</a>
+        <a asp-action="Index" asp-route-id=@ViewBag.Contrato>Volver a la Lista</a>
     </form>
 </div>

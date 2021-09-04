@@ -22,11 +22,10 @@ namespace Inmobiliaria_Peluffo.Controllers
         }
 
         // GET: Pagos
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             try
             {
-                IList<Pago> lista = repositorio.ObtenerTodos();
                 ViewBag.Id = TempData["Id"];
                 if(TempData.ContainsKey("Mensaje")){
                     ViewBag.Mensaje = TempData["Mensaje"];
@@ -37,7 +36,20 @@ namespace Inmobiliaria_Peluffo.Controllers
                 if(TempData.ContainsKey("StackTrate")){
                     ViewBag.StackTrate = TempData["StackTrate"];
                 }
-                return View(lista);
+                if(id != 0){
+                    IList<Pago> lista = repositorio.ObtenerTodosPorContrato(id);
+                    var entidad = repContr.ObtenerPorId(id);
+                    ViewBag.Contrato = id;
+                    ViewBag.Dato = entidad.Inquilino.Dni + " - " + entidad.Inmueble.Direccion;
+                    TempData["Contrato"] = id;
+                    ViewBag.Nro =  lista.Count() + 1 ;
+                    return View(lista);
+                }
+                else{
+                    IList<Pago> lista2 = repositorio.ObtenerTodos();
+                    ViewBag.Contrato = id;
+                    return View(lista2);
+                }
             }
             catch (Exception ex)
             {
@@ -54,6 +66,7 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 var entidad = repositorio.ObtenerPorId(id);
+                ViewBag.Contrato = TempData["Contrato"];
                 return View(entidad);
             }
             catch (Exception ex)
@@ -70,7 +83,6 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                 ViewBag.Contratos = repContr.ObtenerTodos();
                  return View();
             }
             catch (Exception ex)
@@ -88,15 +100,15 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                var idC = p.ContratoId;
                 if(ModelState.IsValid){
                     repositorio.Alta(p);
                     TempData["Id"] = p.Id;
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", new { id = idC});
                 }
                 else{
-                    ViewBag.Mensaje = "No se pudo cargar";
-                    ViewBag.Contratos = repContr.ObtenerTodos();
-                    return View(p);
+                    TempData["Error"] = "No se pudo cargar. Ingrese un monto Válido";
+                    return RedirectToAction("Index", new { id = idC});
                 }
             }
             catch(Exception ex)
@@ -112,8 +124,8 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
-                 ViewBag.Contratos = repContr.ObtenerTodos();
                  var entidad = repositorio.ObtenerPorId(id);
+                 ViewBag.Contrato = TempData["Contrato"];
                  return View(entidad);
             }
             catch (Exception ex)
@@ -133,12 +145,13 @@ namespace Inmobiliaria_Peluffo.Controllers
             {
                 if(ModelState.IsValid){
                     repositorio.Modificacion(p);
+                    var idC = p.ContratoId;
                     TempData["Mensaje"] = "El Pago se modificó con éxito";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", new { id = idC});
                 }
                 else{
                     ViewBag.Mensaje = "No se pudo Editar";
-                    ViewBag.Contratos = repContr.ObtenerTodos();
+                    ViewBag.Contrato = p.ContratoId;
                     return View(p);
                 }
             }
@@ -156,6 +169,7 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 var entidad = repositorio.ObtenerPorId(id);
+                ViewBag.Contrato = TempData["Contrato"];
                 return View(entidad);
             }
             catch (Exception ex)
@@ -173,9 +187,10 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                var idC = repositorio.ObtenerPorId(id);
                 repositorio.Baja(p);
                 TempData["Mensaje"] = "El Pago se eliminó con éxito";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index" , new { id = idC.ContratoId});
             }
             catch(Exception ex)
             {
