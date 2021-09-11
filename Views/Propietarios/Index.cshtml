@@ -22,6 +22,9 @@
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th></th>
+            <th>
+                Inmuebles
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -40,6 +43,9 @@
                 @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
                 @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |
                 @Html.ActionLink("Borrar", "Delete", new { id=item.Id })
+            </td>
+            <td>
+                <a asp-action="Index" asp-controller="Inmuebles" asp-route-id="@item.Id" title="Inmuebles">Inmuebles</a>
             </td>
         </tr>
 }

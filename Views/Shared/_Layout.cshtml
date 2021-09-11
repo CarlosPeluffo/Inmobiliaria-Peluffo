@@ -17,26 +17,31 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index">Propietarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index">Inquilinos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
-                        </li>
-                    </ul>
+                    @if(!User.Identity.IsAuthenticated){
+                        <a class="py-2" asp-controller="Home" asp-action="Index"><span class="fas fa-home"></span> Inicio</a>
+					    <a class="py-2 d-none d-md-inline-block float-right" asp-controller="Usuarios" asp-action="Login"><i class="fas fa-sign-in-alt"></i> Acceder</a>
+                    }
+                    else{
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><span class="fas fa-home"></span>Inicio</a>
+                        @if(User.IsInRole("Administrador")){
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"><span class="fas fa-users"></span>Usuarios</a>
+                        }
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index"><span class="fas fa-user-tie"></span>Propietarios</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index"><span class="fas fa-house-user"></span>Inquilinos</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index"><span class="fas fa-hotel"></span>Inmuebles</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index"><span class="fas fa-file-contract"></span>Contratos</a>
+                        <div class="dropdown">
+                            <a class="btn btn-primary dropdown-toggle text-light" href="#" role="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent" data-display="static">
+                                <span class="lnr lnr-user"></span> @User.Identity.Name
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Perfil"><i class="fas fa-user-circle"></i> Perfil</a>
+                                <a class="dropdown-item text-dark" data-toggle="modal" data-target="#passwordModal"><i class="fas fa-user-circle"></i>Cambiar Contraseña</a>
+                                <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                            </div>
+					    </div>
+                    }
                 </div>
             </div>
         </nav>
@@ -77,16 +82,49 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Cambiar Contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form asp-controller="Usuarios" asp-action="Cambiar">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="form-group">
+                                        <label class="control-label">Contraseña Actual</label>
+                                        <input type="Password" class="form-control"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Contraseña Nueva</label>
+                                        <input class="form-control" name="Monto"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Cambiar" class="btn btn-primary" />
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - Inmobiliaria_Peluffo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - Inmobiliaria_Peluffo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://kit.fontawesome.com/279080609c.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -8,7 +8,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 namespace Inmobiliaria_Peluffo.Models
 {
-    public class RepositorioInmueble : Base
+    public class RepositorioInmueble : Base, IRepositorioInmueble
     {
         public RepositorioInmueble(IConfiguration configuration) : base(configuration)
         {
@@ -183,6 +183,64 @@ namespace Inmobiliaria_Peluffo.Models
                                 Dni = reader.GetString(10)
                             }
 
+                        };
+                        lista.Add(i);
+                    }
+                    conn.Close();
+                }
+            }
+            return lista;
+        }
+        public IList<Inmueble> ObtenerPorPropietario(int id){
+            IList<Inmueble> lista = new List<Inmueble>();
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql = @"SELECT id_inmueble, id_propietario, direccion, uso, 
+                    tipo, cant_ambientes, precio, estado
+                    FROM inmuebles
+                    WHERE id_propietario=@id";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+                    conn.Open();
+                    var reader = comm.ExecuteReader();
+                    while(reader.Read()){
+                        Inmueble i = new Inmueble{
+                            Id = reader.GetInt32(0),
+                            PropietarioId = reader.GetInt32(1),
+                            Direccion = reader.GetString(2),
+                            Uso = reader.GetString(3),
+                            Tipo = reader.GetString(4),
+                            Ambientes = reader.GetInt32(5),
+                            Precio = reader.GetDouble(6),
+                            Estado = reader.GetBoolean(7),
+                        };
+                        lista.Add(i);
+                    }
+                    conn.Close();
+                }
+            }
+            return lista;
+        }
+        public IList<Inmueble> ObtenerLibres(string a, string b){
+            IList<Inmueble> lista = new List<Inmueble>();
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql = @"SELECT i.id_inmueble, i.direccion
+                        FROM inmuebles i
+                        LEFT JOIN contratos c ON i.id_inmueble = c.id_inmueble 
+                        AND c.fecha_inicio < @fechaInicio
+                        AND c.fecha_fin > @fechaFin
+                        AND c.id_inmueble != 0
+                        WHERE c.id_inmueble IS NULL";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.Add("@fechaInicio", MySqlDbType.Date).Value = a;
+                    comm.Parameters.Add("@fechaFin", MySqlDbType.Date).Value = b;
+                    conn.Open();
+                    var reader = comm.ExecuteReader();
+                    while(reader.Read()){
+                        Inmueble i = new Inmueble{
+                            Id = reader.GetInt32(0),
+                            Direccion = reader.GetString(1),
                         };
                         lista.Add(i);
                     }

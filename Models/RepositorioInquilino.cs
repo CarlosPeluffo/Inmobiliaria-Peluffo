@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace Inmobiliaria_Peluffo.Models
 {
-    public class RepositorioInquilino : Base
+    public class RepositorioInquilino : Base, IRepositorioInquilino
     {
         public RepositorioInquilino(IConfiguration configuration) : base(configuration)
         {

@@ -14,12 +14,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" class="form-control" />
+                <input asp-for="FechaInicio" class="form-control" id="inicio" />
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaFin" class="control-label"></label>
-                <input asp-for="FechaFin" class="form-control" />
+                <input asp-for="FechaFin" class="form-control" id="fin" />
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Inmueble</label>
-                <select class="form-control" name="InmuebleId">
+                <select class="form-control" name="InmuebleId" id="inmueble">
                     @foreach (var item in (IList<Inmueble>)ViewBag.Inmuebles)
                     {
                         <option value="@item.Id">@(item.Direccion +". Tipo:" + item.Tipo +". Uso:"+ item.Uso)</option>
@@ -57,4 +57,34 @@
 <div>
     <a asp-action="Index">Volver a la Lista</a>
 </div>
-
+<script>
+    function init() {
+		$('.alert').alert();
+	}
+    function cargarInmuebles(){
+        var fechainicio = $("#inicio").val();
+        var fechafin = $("#fin").val();
+        var selectInmueble = document.getElementById("inmueble");
+        $.get(`@Url.Action("Buscar", "Contratos")/${fechainicio}/${fechafin}`).done((res) =>{
+            console.log(res);
+            inmueblesJSON = res;
+            if(!inmueblesJSON.datos){
+                return;
+            }
+            selectInmueble.innerHTML = "";
+            for(let item of inmueblesJSON.datos){
+                let option = document.createElement("option");
+                option.value = item.id;
+                option.text = item.direccion;
+                selectInmueble.add(option);
+            }
+        }).fail(res => {
+            console.log("Error: " , res);
+        });
+    }
+    var selectFin = document.getElementById("fin")
+    selectFin.addEventListener('change', () => {
+        cargarInmuebles();
+    });
+    
+</script>

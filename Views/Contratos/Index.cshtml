@@ -22,6 +22,12 @@
                 @Html.DisplayNameFor(model => model.Monto)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Cancelado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCancelado)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.InquilinoId)
             </th>
             <th>
@@ -46,6 +52,12 @@
                 @Html.DisplayFor(modelItem => item.Monto)
             </td>
             <td>
+                @Html.DisplayFor(ModelItem => item.Cancelado)
+            </td>
+            <td>
+                @Html.DisplayFor(ModelItem => item.FechaCancelado)
+            </td>
+            <td>
                 @(item.Inquilino.Apellido +" " + item.Inquilino.Nombre + " D.N.I: "+ item.Inquilino.Dni)
             </td>
             <td>
@@ -55,6 +67,13 @@
                 @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
                 @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |
                 @Html.ActionLink("Borrar", "Delete", new { id=item.Id }) |
+                @{
+                    if(item.Cancelado == false){
+                        @Html.ActionLink("Cancelar", "Cancel", new{ id=item.Id})
+                    }else{
+                        @Html.ActionLink("Informe", "Informe", new{id=item.Id})
+                    }
+                }
             </td>
             <td>
                 <a asp-action="Index" asp-controller="Pagos" asp-route-id="@item.Id" title="Pagos">Pagos</a>

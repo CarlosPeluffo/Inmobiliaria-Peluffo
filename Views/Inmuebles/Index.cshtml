@@ -1,7 +1,7 @@
 @model IEnumerable<Inmobiliaria_Peluffo.Models.Inmueble>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Inmuebles";
 }
 
 <h1>Index</h1>
@@ -23,9 +23,13 @@
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PropietarioId)
-            </th>
+            @{
+                if(ViewBag.Propietario < 1){
+                    <th>
+                        @Html.DisplayNameFor(model => model.PropietarioId)
+                    </th>
+                }
+            }
             <th></th>
         </tr>
     </thead>
@@ -44,9 +48,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
-            <td>
-                @(item.Propietario.Apellido + " " + item.Propietario.Nombre)
-            </td>
+            @{
+                if(ViewBag.Propietario < 1){
+                    <td>
+                        @(item.Propietario.Apellido + " " + item.Propietario.Nombre)
+                    </td>
+                }
+            }
             <td>
                 @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
                 @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |

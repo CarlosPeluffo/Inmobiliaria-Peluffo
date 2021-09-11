@@ -6,26 +6,28 @@ using System.Threading.Tasks;
 using Inmobiliaria_Peluffo.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_Peluffo.Controllers
 {
+    [Authorize]
     public class InmueblesController : Controller
     {
-        private readonly RepositorioInmueble repositorio;
-        private readonly RepositorioPropietario repProp;
+        private readonly IRepositorioInmueble repositorio;
+        private readonly IRepositorioPropietario repProp;
         private readonly IConfiguration configuration;
-        public InmueblesController(IConfiguration configuration)
+        public InmueblesController(IConfiguration configuration, IRepositorioInmueble repositorio, IRepositorioPropietario repProp)
         {
             this.configuration = configuration;
-            this.repositorio = new RepositorioInmueble(configuration);
-            this.repProp = new RepositorioPropietario(configuration);
+            this.repositorio = repositorio;
+            this.repProp = repProp;
         }
         // GET: Inmuebles
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             try
             {
-                var lista = repositorio.ObtenerTodos();
+                ViewBag.Propietario = id;
                 ViewBag.Id = TempData["Id"];
                 if(TempData.ContainsKey("Mensaje")){
                     ViewBag.Mensaje = TempData["Mensaje"];
@@ -36,6 +38,11 @@ namespace Inmobiliaria_Peluffo.Controllers
                 if(TempData.ContainsKey("StackTrate")){
                     ViewBag.StackTrate = TempData["StackTrate"];
                 }
+                if(id != 0){
+                    var listado = repositorio.ObtenerPorPropietario(id);
+                    return View(listado);
+                }
+                var lista = repositorio.ObtenerTodos();
                 return View(lista);
             }
             catch (Exception ex)
@@ -150,6 +157,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         }
 
         // GET: Inmuebles/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             try
@@ -168,6 +176,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         // POST: Inmuebles/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(Inmueble inmueble)
         {
             try

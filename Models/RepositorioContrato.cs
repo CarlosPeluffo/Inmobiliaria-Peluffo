@@ -7,7 +7,7 @@ using System;
 
 namespace Inmobiliaria_Peluffo.Models
 {
-    public class RepositorioContrato : Base
+    public class RepositorioContrato : Base, IRepositorioContrato
     {
         public RepositorioContrato(IConfiguration configuration) : base(configuration)
         {
@@ -17,8 +17,9 @@ namespace Inmobiliaria_Peluffo.Models
             int res = -1;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql =@"INSERT INTO contratos(fecha_inicio, fecha_fin, monto,
+                cancelado, fecha_cancelado
                 id_inquilino, id_inmueble)
-                VALUES(@inicio, @fin, @monto, @inquilino, @inmueble);
+                VALUES(@inicio, @fin, @monto, false, NULL , @inquilino, @inmueble);
                 SELECT last_insert_id();";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
@@ -54,6 +55,7 @@ namespace Inmobiliaria_Peluffo.Models
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql =@"UPDATE contratos
                     SET fecha_inicio=@inicio, fecha_fin=@fin, monto=@monto, 
+                    cancelado=@cancelado, fecha_cancelado=@cancelar,
                     id_inquilino=@inquilino, id_inmueble=@inmueble
                     WHERE id_contrato=@id";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
@@ -61,6 +63,8 @@ namespace Inmobiliaria_Peluffo.Models
                     comm.Parameters.AddWithValue("@inicio",c.FechaInicio);
                     comm.Parameters.AddWithValue("@fin",c.FechaFin);
                     comm.Parameters.AddWithValue("@monto",c.Monto);
+                    comm.Parameters.AddWithValue("@cancelado", c.Cancelado);
+                    comm.Parameters.AddWithValue("@cancelar", c.FechaCancelado);
                     comm.Parameters.AddWithValue("@inquilino",c.InquilinoId);
                     comm.Parameters.AddWithValue("@inmueble",c.InmuebleId);
                     comm.Parameters.AddWithValue("@id",c.Id);
@@ -75,6 +79,7 @@ namespace Inmobiliaria_Peluffo.Models
             IList<Contrato> lista = new List<Contrato>();
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql =@"SELECT id_contrato, fecha_inicio, fecha_fin, monto,
+                    cancelado, fecha_cancelado,
                     c.id_inquilino, c.id_inmueble,
                     inq.dni, inq.apellido, inq.nombre,
                     i.direccion, i.uso, i.tipo
@@ -91,19 +96,21 @@ namespace Inmobiliaria_Peluffo.Models
                           FechaInicio = reader.GetDateTime(1),
                           FechaFin = reader.GetDateTime(2),
                           Monto = reader.GetDouble(3),
-                          InquilinoId = reader.GetInt32(4),
-                          InmuebleId = reader.GetInt32(5),
+                          Cancelado = reader.GetBoolean(4),
+                          FechaCancelado = reader["fecha_cancelado"] != DBNull.Value ? reader.GetDateTime(5) : null,
+                          InquilinoId = reader.GetInt32(6),
+                          InmuebleId = reader.GetInt32(7),
                           Inquilino = new Inquilino{
-                              Id = reader.GetInt32(4),
-                              Dni = reader.GetString(6),
-                              Apellido = reader.GetString(7),
-                              Nombre = reader.GetString(8)
+                              Id = reader.GetInt32(6),
+                              Dni = reader.GetString(8),
+                              Apellido = reader.GetString(9),
+                              Nombre = reader.GetString(10)
                           },
                           Inmueble = new Inmueble{
-                              Id = reader.GetInt32(5),
-                              Direccion = reader.GetString(9),
-                              Uso = reader.GetString(10),
-                              Tipo = reader.GetString(11)
+                              Id = reader.GetInt32(7),
+                              Direccion = reader.GetString(11),
+                              Uso = reader.GetString(12),
+                              Tipo = reader.GetString(13)
                           },
                         };
                         lista.Add(c);
@@ -117,6 +124,7 @@ namespace Inmobiliaria_Peluffo.Models
             Contrato c = null;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql =@"SELECT id_contrato, fecha_inicio, fecha_fin, monto,
+                    cancelado, fecha_cancelado,
                     c.id_inquilino, c.id_inmueble,
                     inq.dni, inq.apellido, inq.nombre,
                     i.direccion, i.uso, i.tipo
@@ -135,19 +143,21 @@ namespace Inmobiliaria_Peluffo.Models
                           FechaInicio = reader.GetDateTime(1),
                           FechaFin = reader.GetDateTime(2),
                           Monto = reader.GetDouble(3),
-                          InquilinoId = reader.GetInt32(4),
-                          InmuebleId = reader.GetInt32(5),
+                          Cancelado = reader.GetBoolean(4),
+                          FechaCancelado = reader["fecha_cancelado"] != DBNull.Value ? reader.GetDateTime(5) : null,
+                          InquilinoId = reader.GetInt32(6),
+                          InmuebleId = reader.GetInt32(7),
                           Inquilino = new Inquilino{
-                              Id = reader.GetInt32(4),
-                              Dni = reader.GetString(6),
-                              Apellido = reader.GetString(7),
-                              Nombre = reader.GetString(8)
+                              Id = reader.GetInt32(6),
+                              Dni = reader.GetString(8),
+                              Apellido = reader.GetString(9),
+                              Nombre = reader.GetString(10)
                           },
                           Inmueble = new Inmueble{
-                              Id = reader.GetInt32(5),
-                              Direccion = reader.GetString(9),
-                              Uso = reader.GetString(10),
-                              Tipo = reader.GetString(11)
+                              Id = reader.GetInt32(7),
+                              Direccion = reader.GetString(11),
+                              Uso = reader.GetString(12),
+                              Tipo = reader.GetString(13)
                           },
                         };
                     }
@@ -155,6 +165,22 @@ namespace Inmobiliaria_Peluffo.Models
                 }
             }
             return c;
+        }
+        public int CancelarContrato(Contrato c){
+            int res = -1;
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql =@"UPDATE contratos 
+                    SET cancelado=true, fecha_cancelado = NOW()
+                    WHERE id_contrato=@id";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.AddWithValue("@id", c.Id);
+                    conn.Open();
+                    res = comm.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+            return res;
         }
     }
 }

@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_Peluffo.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_Peluffo.Controllers
 {
+    [Authorize]
     public class ContratosController : Controller
     {
-        private readonly RepositorioContrato repositorio;
-        private readonly RepositorioInmueble repInm;
-        private readonly RepositorioInquilino repInq;
+        private readonly IRepositorioContrato repositorio;
+        private readonly IRepositorioInmueble repInm;
+        private readonly IRepositorioInquilino repInq;
         private readonly IConfiguration configuration;
-        public ContratosController(IConfiguration configuration)
+        public ContratosController(IConfiguration configuration, IRepositorioContrato repositorio, IRepositorioInmueble repInm, IRepositorioInquilino repInq)
         {
             this.configuration = configuration;
-            this.repositorio = new RepositorioContrato(configuration);
-            this.repInm = new RepositorioInmueble(configuration);
-            this.repInq = new RepositorioInquilino(configuration);
+            this.repositorio = repositorio;
+            this.repInm = repInm;
+            this.repInq = repInq;
         } 
         // GET: Contratos
         public ActionResult Index()
@@ -90,9 +92,18 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 if(ModelState.IsValid){
-                    repositorio.Alta(c);
-                    TempData["Id"] = c.Id;
-                    return RedirectToAction(nameof(Index));
+                    int i = DateTime.Compare(c.FechaFin, c.FechaInicio);
+                    if(i > 0){
+                        repositorio.Alta(c);
+                        TempData["Id"] = c.Id;
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else{
+                        ViewBag.Mensaje = "No se pudo cargar. Fecha de Fin debe ser mayor a la Fecha de Inicio";
+                        ViewBag.Inquilinos = repInq.ObtenerTodos();
+                        ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
+                        return View(c);
+                    }
                 }
                 else{
                     ViewBag.Mensaje = "No se pudo cargar";
@@ -135,9 +146,18 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 if(ModelState.IsValid){
-                    repositorio.Modificacion(contrato);
-                    TempData["Mensaje"] = "El Contrato se modificó con éxito";
-                    return RedirectToAction(nameof(Index));
+                    int i = DateTime.Compare(contrato.FechaFin, contrato.FechaInicio);
+                    if(i > 0){
+                        repositorio.Modificacion(contrato);
+                        TempData["Mensaje"] = "El Contrato se modificó con éxito";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else{
+                        ViewBag.Mensaje = "No se pudo cargar. Fecha de Fin debe ser mayor a la Fecha de Inicio";
+                        ViewBag.Inquilinos = repInq.ObtenerTodos();
+                        ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
+                        return View(contrato);
+                    }
                 }
                 else{
                     ViewBag.Mensaje = "No se pudo Editar";
@@ -155,6 +175,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         }
 
         // GET: Contratos/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             try
@@ -173,6 +194,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         // POST: Contratos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Contrato contrato )
         {
             try
@@ -186,6 +208,51 @@ namespace Inmobiliaria_Peluffo.Controllers
                 TempData["Error"] = ex.Message;
                 TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
+            }
+        }
+        
+        public ActionResult Cancel(int id){
+            try
+            {
+                var contrato = repositorio.ObtenerPorId(id);
+                return View(contrato);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Cancel(int id, Contrato contrato){
+            try
+            {
+                repositorio.CancelarContrato(contrato);
+                TempData["Mensaje"] = "El contrato se canceló con éxito";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+                
+            }
+        }
+        
+        [Route("[controller]/Buscar/{fechaIn}/{fechaF}", Name= "Buscar")]
+        public ActionResult Buscar(string fechaIn, string fechaF){
+            try
+            {
+                var res = repInm.ObtenerLibres(fechaIn, fechaF);
+                return Json(new { Datos = res });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Error = ex.Message });
             }
         }
     }

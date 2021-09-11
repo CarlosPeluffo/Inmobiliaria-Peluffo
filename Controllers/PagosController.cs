@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_Peluffo.Models;
 
 namespace Inmobiliaria_Peluffo.Controllers
 {
+    [Authorize]
     public class PagosController : Controller
     {
-        private readonly RepositorioPago repositorio;
-        private readonly RepositorioContrato repContr;
+        private readonly IRepositorioPago repositorio;
+        private readonly IRepositorioContrato repContr;
         private readonly IConfiguration configuration;
-        public PagosController(IConfiguration configuration)
+        public PagosController(IConfiguration configuration, IRepositorioPago repositorio, IRepositorioContrato repContr)
         {
             this.configuration = configuration;
-            this.repositorio = new RepositorioPago(configuration);
-            this.repContr = new RepositorioContrato(configuration);
+            this.repositorio = repositorio;
+            this.repContr = repContr;
         }
 
         // GET: Pagos
@@ -164,6 +166,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         }
 
         // GET: Pagos/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             try
@@ -183,6 +186,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         // POST: Pagos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Pago p)
         {
             try

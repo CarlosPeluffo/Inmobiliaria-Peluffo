@@ -20,11 +20,23 @@ namespace Inmobiliaria_Peluffo.Controllers
 
         public IActionResult Index()
         {
+            if(TempData.ContainsKey("Mensaje")){
+                ViewBag.Mensaje = TempData["Mensaje"];
+            }
+            if(TempData.ContainsKey("Error")){
+                ViewBag.Mensaje = TempData["Error"];
+            }
+            if(TempData.ContainsKey("StackTrate")){
+                ViewBag.StackTrate = TempData["StackTrate"];
+            }
             return View();
         }
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+        public IActionResult Restringido(){
             return View();
         }
 

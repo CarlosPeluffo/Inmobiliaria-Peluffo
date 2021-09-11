@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 using Inmobiliaria_Peluffo.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria_Peluffo.Controllers
 {
+    [Authorize]
     public class InquilinosController : Controller
     {
-        private readonly RepositorioInquilino repositorio;
+        private readonly IRepositorioInquilino repositorio;
         private readonly IConfiguration configuration;
-        public InquilinosController(IConfiguration configuration)
+        public InquilinosController(IConfiguration configuration, IRepositorioInquilino repositorio)
         {
             this.configuration = configuration;
-            this.repositorio = new RepositorioInquilino(configuration);
+            this.repositorio = repositorio;
         }
         // GET: Inquilinos
         public ActionResult Index()
@@ -137,6 +139,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         }
 
         // GET: Inquilinos/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             try
@@ -155,6 +158,7 @@ namespace Inmobiliaria_Peluffo.Controllers
         // POST: Inquilinos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(Inquilino i)
         {
             try

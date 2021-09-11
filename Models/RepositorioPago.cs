@@ -5,7 +5,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 namespace Inmobiliaria_Peluffo.Models
 {
-    public class RepositorioPago : Base
+    public class RepositorioPago : Base, IRepositorioPago
     {
         public RepositorioPago(IConfiguration configuration) : base(configuration)
         {
@@ -20,7 +20,6 @@ namespace Inmobiliaria_Peluffo.Models
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     comm.Parameters.AddWithValue("@nro_pago", p.NroPago);
-                    //comm.Parameters.AddWithValue("fecha_pago", p.FechaPago); //fecha de hoy
                     comm.Parameters.AddWithValue("@monto", p.Monto);
                     comm.Parameters.AddWithValue("@contrato", p.ContratoId);
                     conn.Open();
@@ -50,10 +49,7 @@ namespace Inmobiliaria_Peluffo.Models
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql= @"UPDATE pagos SET monto=@monto WHERE id_pago=@id";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
-                    //comm.Parameters.AddWithValue("@nro_pago", p.NroPago);
-                    //comm.Parameters.AddWithValue("@fecha", p.FechaPago);
                     comm.Parameters.AddWithValue("@monto", p.Monto);
-                    //comm.Parameters.AddWithValue("@contrato", p.ContratoId);
                     comm.Parameters.AddWithValue("@id", p.Id);
                     conn.Open();
                     res = comm.ExecuteNonQuery();

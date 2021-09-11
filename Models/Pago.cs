@@ -9,7 +9,7 @@ namespace Inmobiliaria_Peluffo.Models
         public int Id { get; set; }
 
         [Required]
-        [Range(1, 999)]
+        [Range(0, 999)]
         [Display(Name = "Nro. Pago")]
         public int NroPago { get; set; }
 
