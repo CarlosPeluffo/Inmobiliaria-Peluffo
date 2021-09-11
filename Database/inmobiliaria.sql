@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-09-2021 a las 04:46:14
+-- Tiempo de generación: 11-09-2021 a las 10:15:08
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.9
 
@@ -32,6 +32,8 @@ CREATE TABLE `contratos` (
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `monto` double NOT NULL,
+  `cancelado` tinyint(4) NOT NULL,
+  `fecha_cancelado` date DEFAULT NULL,
   `id_inquilino` int(11) NOT NULL,
   `id_inmueble` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -40,9 +42,9 @@ CREATE TABLE `contratos` (
 -- Volcado de datos para la tabla `contratos`
 --
 
-INSERT INTO `contratos` (`id_contrato`, `fecha_inicio`, `fecha_fin`, `monto`, `id_inquilino`, `id_inmueble`) VALUES
-(5, '2021-08-27', '2021-10-28', 25000, 2, 2),
-(6, '2021-08-31', '2021-11-28', 25000, 1, 1);
+INSERT INTO `contratos` (`id_contrato`, `fecha_inicio`, `fecha_fin`, `monto`, `cancelado`, `fecha_cancelado`, `id_inquilino`, `id_inmueble`) VALUES
+(5, '2021-08-27', '2021-10-28', 25000, 0, NULL, 2, 2),
+(6, '2021-08-31', '2021-11-28', 25000, 0, NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -66,8 +68,8 @@ CREATE TABLE `inmuebles` (
 --
 
 INSERT INTO `inmuebles` (`id_inmueble`, `id_propietario`, `direccion`, `uso`, `tipo`, `cant_ambientes`, `precio`, `estado`) VALUES
-(1, 1, 'Potosi 375', 'Residencial', 'Casa', 5, 1500000, 0),
-(2, 1, 'Potosi 399', 'Residencial', 'Casa', 6, 1500000, 0),
+(1, 1, 'Potosi 375', 'Residencial', 'Casa', 5, 1500000, 1),
+(2, 1, 'Potosi 399', 'Residencial', 'Casa', 6, 1500000, 1),
 (4, 1, 'Algo 123', 'Comercial', 'Salón', 1, 50000, 1);
 
 -- --------------------------------------------------------
@@ -119,7 +121,8 @@ CREATE TABLE `pagos` (
 INSERT INTO `pagos` (`id_pago`, `nro_pago`, `fecha_pago`, `monto`, `id_contrato`) VALUES
 (1, 1, '2021-09-02', 25000, 6),
 (4, 2, '2021-09-02', 25004, 6),
-(9, 3, '2021-09-03', 25010, 6);
+(9, 3, '2021-09-03', 25010, 6),
+(11, 1, '2021-09-07', 24003, 5);
 
 -- --------------------------------------------------------
 
@@ -142,6 +145,30 @@ CREATE TABLE `propietarios` (
 
 INSERT INTO `propietarios` (`id_propietario`, `apellido`, `nombre`, `dni`, `mail`, `telefono`) VALUES
 (1, 'Peluffo', 'Carlos Ayrton', '37505706', 'carlossolari1994@gmail.com', '2657302766');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `nombre` varchar(200) NOT NULL,
+  `apellido` varchar(200) NOT NULL,
+  `mail` varchar(200) NOT NULL,
+  `clave` varchar(250) NOT NULL,
+  `avatar` varchar(200) DEFAULT NULL,
+  `rol` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `mail`, `clave`, `avatar`, `rol`) VALUES
+(2, 'Admin', 'Admin', 'admin@admin.com', 'rfCzKZ8yCB6TsDT6RQyjXL5esg01QEXyY2Qoqp2ywBI=', '/UsersFiles\\photo_2.png', 1),
+(3, 'Sampler', 'Momo', 'rey_momo@gmail.com', 'oGul7LO4P4tcN5bk1haHIkE2QMvhY4Tcn5F5vVQf1Ps=', '/UsersFiles\\photo_3.jpg', 0);
 
 --
 -- Índices para tablas volcadas
@@ -175,7 +202,7 @@ ALTER TABLE `inquilinos`
 --
 ALTER TABLE `pagos`
   ADD PRIMARY KEY (`id_pago`),
-  ADD UNIQUE KEY `nro_pago` (`nro_pago`),
+  ADD UNIQUE KEY `nro_pago` (`nro_pago`,`id_contrato`),
   ADD KEY `id_contrato` (`id_contrato`);
 
 --
@@ -184,6 +211,13 @@ ALTER TABLE `pagos`
 ALTER TABLE `propietarios`
   ADD PRIMARY KEY (`id_propietario`),
   ADD UNIQUE KEY `dni` (`dni`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `mail` (`mail`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -211,13 +245,19 @@ ALTER TABLE `inquilinos`
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`
 --
 ALTER TABLE `propietarios`
   MODIFY `id_propietario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
