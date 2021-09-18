@@ -1,12 +1,13 @@
 @model Inmobiliaria_Peluffo.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Inmueble";
 }
+<div class="text-center">
+    <h1>Editar</h1>
 
-<h1>Editar</h1>
-
-<h4>Inmueble</h4>
+    <h4>Inmueble</h4>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -60,6 +61,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Volver a la Lista</a>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id="@ViewBag.Propietario">
+        <i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>
 

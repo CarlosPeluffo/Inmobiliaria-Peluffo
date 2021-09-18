@@ -1,12 +1,13 @@
 @model Inmobiliaria_Peluffo.Models.Pago
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Pagos";
 }
+<div class="text-center">
+    <h1>Editar</h1>
 
-<h1>Editar</h1>
-
-<h4>Pago</h4>
+    <h4>Pago</h4>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -28,6 +29,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-id=@ViewBag.Contrato>Volver a la Lista</a>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id=@ViewBag.Contrato>
+        <i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>
 

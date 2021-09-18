@@ -17,7 +17,7 @@ namespace Inmobiliaria_Peluffo.Models
             int res = -1;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
                 string sql =@"INSERT INTO contratos(fecha_inicio, fecha_fin, monto,
-                cancelado, fecha_cancelado
+                cancelado, fecha_cancelado,
                 id_inquilino, id_inmueble)
                 VALUES(@inicio, @fin, @monto, false, NULL , @inquilino, @inmueble);
                 SELECT last_insert_id();";

@@ -1,14 +1,14 @@
 @model Inmobiliaria_Peluffo.Models.Contrato
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Borrar Contrato";
 }
-
-<h1>Borrar</h1>
-
-<h3>¿Está seguro que desea borrarlo?</h3>
-<div>
+<div class="text-center">
+    <h1>Borrar</h1>
     <h4>Contrato</h4>
+    <h3>¿Está seguro que desea borrarlo?</h3>
+</div>
+<div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -36,6 +36,30 @@
             @Html.DisplayFor(model => model.Monto)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Cancelado)
+        </dt>
+        <dd class = "col-sm-10">
+            @{
+                if(Model.Cancelado == true){
+                        <p>
+                            <i class="fas fa-check"></i> Si
+                        </p>
+                }else{
+                    <div class="falso">
+                        <p>
+                            <i class="fas fa-times"></i> No
+                        </p>
+                    </div>
+                }
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaCancelado)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaCancelado)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.InquilinoId)
         </dt>
         <dd class = "col-sm-10">
@@ -48,9 +72,12 @@
             @($"{Model.Inmueble.Direccion}. Uso:  {Model.Inmueble.Uso}. Tipo:  {Model.Inmueble.Tipo}")
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Borrar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la Lista</a>
-    </form>
+    <div class="text-center">
+        <form asp-action="Delete">
+            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i> Borrar</button>
+        </form>
+    </div>
+</div>
+<div>
+    <a class="btn btn-primary" asp-action="Index"><i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>

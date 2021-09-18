@@ -175,6 +175,9 @@ namespace Inmobiliaria_Peluffo.Controllers
                 if(user.Clave == null){
                     user.Clave = OldUser.Clave;
                 }
+                if(user.Rol == 0){
+                    user.Rol = OldUser.Rol;
+                }
                 //if(ModelState.IsValid){
                     if (!User.IsInRole("Administrador")){
                         var usuarioActual = repositorio.ObtenerPorMail(User.Identity.Name);
@@ -327,6 +330,41 @@ namespace Inmobiliaria_Peluffo.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme);
             TempData["Mensaje"] = "Sesión finalizada con éxito";
             return RedirectToAction("Index", "Home");
+        }
+        public ActionResult Cambiar(IFormCollection collection){
+            try
+            {
+                var usuarioActual = repositorio.ObtenerPorMail(User.Identity.Name);
+                var actual = collection["actual"];
+                var nueva = collection["nueva"];
+                string hashedActual = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: actual,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+                if(usuarioActual.Clave == hashedActual){
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: nueva,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+                    usuarioActual.Clave = hashed;
+                    repositorio.CambiarContraseña(usuarioActual);
+                    TempData["Mensaje"] = "Contraseña Actualizada con éxito.";
+                    return RedirectToAction("Index", "Home");
+                }else{
+                    TempData["Mensaje"] = "No sé puedo cambiar la contraseña.";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

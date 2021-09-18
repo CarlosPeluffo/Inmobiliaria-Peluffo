@@ -40,8 +40,11 @@ namespace Inmobiliaria_Peluffo.Controllers
                 }
                 if(id != 0){
                     var listado = repositorio.ObtenerPorPropietario(id);
+                    TempData["Propietario"] = id;
+                    ViewBag.Propietario = id;
                     return View(listado);
                 }
+                TempData["Propietario"] = id;
                 var lista = repositorio.ObtenerTodos();
                 return View(lista);
             }
@@ -59,6 +62,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Propietario")){
+                    ViewBag.Propietario = TempData["Propietario"];
+                }
                 var entidad = repositorio.ObtenerPorId(id);
                 return View(entidad);
             }
@@ -118,6 +124,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Propietario")){
+                    ViewBag.Propietario = TempData["Propietario"];
+                }
                 var entidad = repositorio.ObtenerPorId(id);
                 ViewBag.Propietarios = repProp.ObtenerTodos();
                 return View(entidad);
@@ -162,6 +171,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Propietario")){
+                    ViewBag.Propietario = TempData["Propietario"];
+                }
                 var entidad = repositorio.ObtenerPorId(id);
                 return View(entidad);
             }

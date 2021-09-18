@@ -1,14 +1,14 @@
 @model Inmobiliaria_Peluffo.Models.Pago
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Borrar Pago";
 }
-
-<h1>Borrar</h1>
-
-<h3>¿Está seguro que desea borrarlo?</h3>
-<div>
+<div class="text-center">
+    <h1>Borrar</h1>
     <h4>Pago</h4>
+    <h3>¿Está seguro que desea borrarlo?</h3>
+</div>
+<div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -43,9 +43,13 @@
             @($"{Model.Contrato.Inmueble.Direccion}. Tipo:  {Model.Contrato.Inmueble.Tipo}")
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Borrar" class="btn btn-danger" /> |
-        <a asp-action="Index" asp-route-id=@ViewBag.Contrato>Volver a la Lista</a>
-    </form>
+    <div class="text-center">
+        <form asp-action="Delete">
+            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i> Borrar</button>
+        </form>
+    </div>
+</div>
+<div>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id=@ViewBag.Contrato>
+        <i class="far fa-hand-point-left"></i> Volver a la Lista</a>    
 </div>

@@ -1,13 +1,13 @@
 @model Inmobiliaria_Peluffo.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles Inmuebles";
 }
-
-<h1>Details</h1>
-
-<div>
+<div class="text-center">
+    <h1>Detalles</h1>
     <h4>Inmueble</h4>
+</div>
+<div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -50,7 +50,17 @@
             @Html.DisplayNameFor(model => model.Estado)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+            @{
+                if(Model.Estado == true){
+                    <p>
+                        <i class="fas fa-check"></i> Activo
+                    </p>
+                }else{
+                    <p>
+                        <i class="fas fa-times"></i> Desactivo
+                    </p>
+                }
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PropietarioId)
@@ -60,7 +70,15 @@
         </dd>
     </dl>
 </div>
+<div class="text-center">
+    @{
+        if(ViewBag.Propietario < 1){
+        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id" title="Editar">
+            <i class="far fa-edit"></i> Editar</a>
+        }
+    }
+</div>
 <div>
-    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">volver a la Lista</a>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id="@ViewBag.Propietario">
+        <i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>

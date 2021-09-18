@@ -151,5 +151,21 @@ namespace Inmobiliaria_Peluffo.Models
             }
             return user;
         }
+        public int CambiarContraseña(Usuario usuario){
+            int res = -1;
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql = @"UPDATE usuarios SET clave=@password
+                WHERE id_usuario=@id";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.AddWithValue("@password", usuario.Clave);
+                    comm.Parameters.AddWithValue("@id", usuario.Id);
+                    conn.Open();
+                    res = comm.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+            return res;
+        }
     }
 }

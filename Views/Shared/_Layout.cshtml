@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Inmobiliaria Peluffo</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/estilo.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -18,26 +19,26 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     @if(!User.Identity.IsAuthenticated){
-                        <a class="py-2" asp-controller="Home" asp-action="Index"><span class="fas fa-home"></span> Inicio</a>
+                        <a class="py-2" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Inicio</a>
 					    <a class="py-2 d-none d-md-inline-block float-right" asp-controller="Usuarios" asp-action="Login"><i class="fas fa-sign-in-alt"></i> Acceder</a>
                     }
                     else{
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><span class="fas fa-home"></span>Inicio</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Inicio</a>
                         @if(User.IsInRole("Administrador")){
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"><span class="fas fa-users"></span>Usuarios</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="fas fa-users"></i> Usuarios</a>
                         }
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index"><span class="fas fa-user-tie"></span>Propietarios</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index"><span class="fas fa-house-user"></span>Inquilinos</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index"><span class="fas fa-hotel"></span>Inmuebles</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index"><span class="fas fa-file-contract"></span>Contratos</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index"><i class="fas fa-user-tie"></i> Propietarios</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index"><i class="fas fa-house-user"></i> Inquilinos</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index"><i class="fas fa-hotel"></i> Inmuebles</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index"><i class="fas fa-file-contract"></i> Contratos</a>
                         <div class="dropdown">
                             <a class="btn btn-primary dropdown-toggle text-light" href="#" role="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent" data-display="static">
-                                <span class="lnr lnr-user"></span> @User.Identity.Name
+                                <i class="fas fa-user"></i> @User.Identity.Name
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Perfil"><i class="fas fa-user-circle"></i> Perfil</a>
-                                <a class="dropdown-item text-dark" data-toggle="modal" data-target="#passwordModal"><i class="fas fa-user-circle"></i>Cambiar Contraseña</a>
+                                <a class="dropdown-item text-dark" data-toggle="modal" data-target="#passwordModal"><i class="fas fa-key"></i> Cambiar Contraseña</a>
                                 <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Salir</a>
                             </div>
 					    </div>
@@ -51,26 +52,34 @@
             @if(ViewBag.Id != null){
                 <div class="alert alert-success alert-dismessible fade show" role="alert">
                     <strong>La entidad fue cargada con éxito. ID. @ViewBag.Id</strong>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="far fa-times-circle"></i></span>
+                    </button>
                 </div>
             }
             else if (ViewBag.Mensaje != null){
                 <div class="alert alert-info alert-dismissible fade show" role="alert">
                     <strong>Información:</strong> @ViewBag.Mensaje
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="far fa-times-circle"></i></span>
+                    </button>
                 </div>
             }
             else if(ViewBag.Error != null){
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>¡Error!</strong> @ViewBag.Error
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="far fa-times-circle"></i></span>
+                    </button>
                 </div>
             }
             else if (!String.IsNullOrWhiteSpace(ViewBag.Error)){
 				<environment names="Development">
 					<div class="alert alert-danger alert-dismissible fade show" role="alert">
 						<strong>¡Error!</strong> Ocurrió: @ViewBag.Error
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"><i class="far fa-times-circle"></i></span>
+                        </button>
 						<a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
 						<div class="collapse multi-collapse" id="multiCollapseExample1">
 							@ViewBag.StackTrace
@@ -98,11 +107,11 @@
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="form-group">
                                         <label class="control-label">Contraseña Actual</label>
-                                        <input type="Password" class="form-control"/>
+                                        <input type="password" class="form-control" name="actual"/>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Contraseña Nueva</label>
-                                        <input class="form-control" name="Monto"/>
+                                        <input type="password" class="form-control" name="nueva"/>
                                     </div>
                                     <div class="form-group">
                                         <input type="submit" value="Cambiar" class="btn btn-primary" />

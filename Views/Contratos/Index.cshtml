@@ -1,13 +1,15 @@
 @model IEnumerable<Inmobiliaria_Peluffo.Models.Contrato>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Contratos";
 }
-
-<h1>Index</h1>
-
+<div class="text-center">
+    <h1>Listado de Contratos</h1>
+</div>
 <p>
-    <a asp-action="Create">Crear Nuevo Contrato</a>
+    <a class="btn btn-success" asp-action="Create"><i class="far fa-plus-square"></i> Crear Nuevo Contrato</a>
+    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-file-invoice-dollar"></i> Ver Contratos Vigentes</a>
+    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-hotel"></i> Ver Inmuebles Disponibles</a>
 </p>
 <table class="table">
     <thead>
@@ -34,9 +36,7 @@
                 @Html.DisplayNameFor(model => model.InmuebleId)
             </th>
             <th></th>
-            <th>
-                Pagos
-            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -52,7 +52,21 @@
                 @Html.DisplayFor(modelItem => item.Monto)
             </td>
             <td>
-                @Html.DisplayFor(ModelItem => item.Cancelado)
+                @{
+                    if(item.Cancelado == true){
+                        <div class="verdadero">
+                            <div class="text-center">
+                                <i class="fas fa-check">Si</i>
+                            </div>
+                        </div>
+                    }else{
+                        <div class="falso">
+                            <div class="text-center">
+                                <i class="fas fa-times">No</i>
+                            </div>
+                        </div>
+                    }
+                }
             </td>
             <td>
                 @Html.DisplayFor(ModelItem => item.FechaCancelado)
@@ -64,19 +78,42 @@
                 @(item.Inmueble.Direccion +" Uso: " + item.Inmueble.Uso +" Tipo: "+ item.Inmueble.Tipo)
             </td>
             <td>
-                @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Borrar", "Delete", new { id=item.Id }) |
-                @{
-                    if(item.Cancelado == false){
-                        @Html.ActionLink("Cancelar", "Cancel", new{ id=item.Id})
-                    }else{
-                        @Html.ActionLink("Informe", "Informe", new{id=item.Id})
+                <div class="btn-group-vertical" role="group">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+				        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                            <i class="far fa-edit"></i> Editar
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Second group">
+                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id" title="Detalles">
+                            <i class="fas fa-info-circle"></i> Detalles
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" title="Borrar">
+                            <i class="far fa-trash-alt"></i> Borrar
+                        </a>
+                    </div>
+                    @{
+                        if(item.Cancelado == false){
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Four group">
+                                <a class="btn btn-danger" asp-action="Cancel" asp-route-id="@item.Id" title="Cancelar">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
+                        }else{
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Four group">
+                                <a class="btn btn-primary" asp-action="Informe" asp-route-id="@item.Id" title="Informe">
+                                    <i class="fas fa-info"></i> Informe
+                                </a>
+                            </div>
+                        }
                     }
-                }
+                </div>
             </td>
             <td>
-                <a asp-action="Index" asp-controller="Pagos" asp-route-id="@item.Id" title="Pagos">Pagos</a>
+                <a class="btn btn-success btn-sm" asp-action="Index" asp-controller="Pagos" asp-route-id="@item.Id" title="Pagos">
+                    <i class="fas fa-file-invoice-dollar"></i>Pagos</a>
             </td>
         </tr>
 }

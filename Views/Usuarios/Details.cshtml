@@ -1,13 +1,13 @@
 @model Inmobiliaria_Peluffo.Models.Usuario
 
 @{
-    ViewData["Title"] = "Detalles";
+    ViewData["Title"] = "Detalles Usuario";
 }
-
-<h1>Details</h1>
-
-<div>
+<div class="text-center">
+    <h1>Detalles</h1>
     <h4>Usuario</h4>
+</div>
+<div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -48,7 +48,11 @@
         </dd>
     </dl>
 </div>
+<div class="text-center">
+    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id" title="Editar">
+        <i class="far fa-edit"></i> Editar
+    </a>
+</div>
 <div>
-    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Volver a la Lista</a>
+    <a class="btn btn-primary" asp-action="Index"><i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>

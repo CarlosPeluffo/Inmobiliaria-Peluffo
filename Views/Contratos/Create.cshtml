@@ -3,10 +3,11 @@
 @{
     ViewData["Title"] = "Create";
 }
+<div class="text-center">
+    <h1>Crear</h1>
 
-<h1>Crear</h1>
-
-<h4>Contrato</h4>
+    <h4>Contrato</h4>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -55,7 +56,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Volver a la Lista</a>
+    <a class="btn btn-primary" asp-action="Index"><i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>
 <script>
     function init() {
@@ -74,8 +75,9 @@
             selectInmueble.innerHTML = "";
             for(let item of inmueblesJSON.datos){
                 let option = document.createElement("option");
+                let texto = `${item.direccion}. Uso: ${item.uso}. Tipo: ${item.tipo}`;
                 option.value = item.id;
-                option.text = item.direccion;
+                option.text = texto;
                 selectInmueble.add(option);
             }
         }).fail(res => {

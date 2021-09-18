@@ -126,9 +126,15 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(ModelState.IsValid){
                 repositorio.Modificacion(i);
                 TempData["Mensaje"] = "El Inquilino se modificó Correctamente";
                 return RedirectToAction(nameof(Index));
+                }
+                else{
+                    ViewBag.Mensaje = "No se pudo cargar. Inquilino inválido";
+                        return View(i);
+                }
             }
             catch(Exception ex)
             {

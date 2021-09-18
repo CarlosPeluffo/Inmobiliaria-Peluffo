@@ -3,11 +3,11 @@
 @{
     ViewData["Title"] = "Pagos";
 }
-
-<h1>Pagos @(ViewBag.Contrato > 0 ? " del contrato " + ViewBag.Dato : "")</h1>
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pagoModal">
-  Crear Nuevo Pago
+<div class="text-center">
+    <h1>Pagos @(ViewBag.Contrato > 0 ? " del contrato " + ViewBag.Dato : "")</h1>
+</div>
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#pagoModal">
+  <i class="far fa-plus-square"></i> Crear Nuevo Pago
 </button>
 
 <table class="table">
@@ -55,9 +55,23 @@
             }
             
             <td>
-                @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Borrar", "Delete", new { id=item.Id })
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+				        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                            <i class="far fa-edit"></i> Editar
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Second group">
+                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id" title="Detalles">
+                            <i class="fas fa-info-circle"></i> Detalles
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" title="Borrar">
+                            <i class="far fa-trash-alt"></i> Borrar
+                        </a>
+                    </div>
+                </div>
             </td>
         </tr>
 }

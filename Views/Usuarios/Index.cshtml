@@ -1,13 +1,13 @@
 @model IEnumerable<Inmobiliaria_Peluffo.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Usuarios";
 }
-
-<h1>Index</h1>
-
+<div class="text-center">
+    <h1>Listado de Usuarios</h1>
+</div>
 <p>
-    <a asp-action="Create">Crear Nuevo</a>
+    <a class="btn btn-success" asp-action="Create"><i class="far fa-plus-square"></i> Crear Nuevo Usuario</a>
 </p>
 <table class="table">
     <thead>
@@ -49,9 +49,23 @@
                 @Html.DisplayFor(modelItem => item.RolNombre)
             </td>
             <td>
-                @Html.ActionLink("Editar", "Edit", new {id=item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new {id=item.Id }) |
-                @Html.ActionLink("Borrar", "Delete", new {id=item.Id })
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+				        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                            <i class="far fa-edit"></i> Editar
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Second group">
+                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id" title="Detalles">
+                            <i class="fas fa-info-circle"></i> Detalles
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" title="Borrar">
+                            <i class="far fa-trash-alt"></i> Borrar
+                        </a>
+                    </div>
+                </div>
             </td>
         </tr>
 }
