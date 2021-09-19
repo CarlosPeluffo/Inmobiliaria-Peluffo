@@ -71,10 +71,15 @@
     </dl>
 </div>
 <div class="text-center">
-    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id" title="Editar">
-        <i class="far fa-edit"></i> Editar
-    </a>
+    @{
+        if(ViewBag.Inmueble < 1){
+            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id" title="Editar">
+                <i class="far fa-edit"></i> Editar
+            </a>
+        }
+    }
 </div>
 <div>
-    <a class="btn btn-primary" asp-action="Index"><i class="far fa-hand-point-left"></i> Volver a la Lista</a>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id="@ViewBag.Inmueble">
+        <i class="far fa-hand-point-left"></i> Volver a la Lista</a>
 </div>

@@ -1,0 +1,19 @@
+@model Inmobiliaria_Peluffo.Models.Contrato
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="text-center">
+    <h1>Informe</h1>
+
+    <h4>Contrato</h4>
+    <hr />
+    <div>
+        <p>El Inquilino debe pagar $ @ViewBag.Saldo</p>
+    </div>
+    <div>
+        <a class="btn btn-primary" asp-action="Index" asp-route-id="@ViewBag.Inmueble">
+            <i class="far fa-hand-point-left"></i> Volver a la Lista
+        </a>
+    </div>
+</div>

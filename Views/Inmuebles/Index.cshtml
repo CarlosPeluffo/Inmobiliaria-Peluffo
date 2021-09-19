@@ -5,10 +5,19 @@
 }
 <div class="text-center">
     <h1>Listado de Inmuebles</h1>
+    @{
+        if(ViewBag.Disponibles > 0){
+            <h3>Disponibles</h3>
+        }
+    }
 </div>
-<p>
-    <a class="btn btn-success" asp-action="Create"><i class="far fa-plus-square"></i> Crear Nuevo Inmueble</a>
-</p>
+@{
+    if(ViewBag.Disponibles < 1){
+        <p>
+            <a class="btn btn-success" asp-action="Create"><i class="far fa-plus-square"></i> Crear Nuevo Inmueble</a>
+        </p>
+    }
+}
 <table class="table">
     <thead>
         <tr>
@@ -90,7 +99,7 @@
                 </div>
             </td>
             <td>
-                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id" title="Detalles">
+                <a class="btn btn-info btn-sm" asp-action="Index" asp-controller="Contratos" asp-route-id="@item.Id" title="Contratos">
                     <i class="fas fa-file-contract"></i> Contratos
                 </a>
             </td>
@@ -101,8 +110,12 @@
 <div>
     @{
         if(ViewBag.Propietario > 0){
-            <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Propietarios" title="Propietarios">
-                <i class="fas fa-user-tie"></i> Volver al Listado</a>
+            <a class="btn btn-primary" asp-action="Index" asp-controller="Propietarios" title="Propietarios">
+                <i class="fas fa-user-tie"></i> Volver a Propietarios</a>
+        }
+        if(ViewBag.Disponibles > 0){
+            <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Contratos" title="Contratos">
+                <i class="fas fa-file-contract"></i> Volver a Contratos</a>
         }
     }
 </div>

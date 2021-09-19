@@ -25,11 +25,11 @@ namespace Inmobiliaria_Peluffo.Controllers
             this.repInq = repInq;
         } 
         // GET: Contratos
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             try
             {
-                var lista = repositorio.ObtenerTodos();
+                ViewBag.Inmueble = id;
                 ViewBag.Id = TempData["Id"];
                 if(TempData.ContainsKey("Mensaje")){
                     ViewBag.Mensaje = TempData["Mensaje"];
@@ -40,6 +40,12 @@ namespace Inmobiliaria_Peluffo.Controllers
                 if(TempData.ContainsKey("StackTrate")){
                     ViewBag.StackTrate = TempData["StackTrate"];
                 }
+                if(id != 0){
+                    var listado = repositorio.ObtenerPorInmueble(id);
+                    TempData["Inmueble"] = id;
+                    return View(listado);
+                }
+                var lista = repositorio.ObtenerTodos();
                 return View(lista);
             }
             catch (Exception ex)
@@ -56,6 +62,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Inmueble")){
+                    ViewBag.Inmueble = TempData["Inmueble"];
+                }
                 var entidad = repositorio.ObtenerPorId(id);
                 return View(entidad);
             }
@@ -125,6 +134,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Inmueble")){
+                    ViewBag.Inmueble = TempData["Inmueble"];
+                }
                 ViewBag.Inquilinos = repInq.ObtenerTodos();
                 ViewBag.Inmuebles = repInm.ObtenerTodosActivos();
                 var entidad = repositorio.ObtenerPorId(id);
@@ -180,6 +192,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         {
             try
             {
+                if(TempData.ContainsKey("Inmueble")){
+                    ViewBag.Inmueble = TempData["Inmueble"];
+                }
                 var entidad = repositorio.ObtenerPorId(id);
                 return View(entidad);
             }
@@ -214,6 +229,9 @@ namespace Inmobiliaria_Peluffo.Controllers
         public ActionResult Cancel(int id){
             try
             {
+                if(TempData.ContainsKey("Inmueble")){
+                    ViewBag.Inmueble = TempData["Inmueble"];
+                }
                 var contrato = repositorio.ObtenerPorId(id);
                 return View(contrato);
             }
@@ -253,6 +271,37 @@ namespace Inmobiliaria_Peluffo.Controllers
             catch (Exception ex)
             {
                 return Json(new { Error = ex.Message });
+            }
+        }
+
+        //[Route("[controller]/Vigentes/{fechaIn}/{fechaF}", Name= "Vigentes")]
+        public ActionResult Vigentes(IFormCollection collection){
+            try{
+                var fechaIn = collection["FechaIn"];
+                var fechaF = collection["FechaF"];
+                var lista = repositorio.ObtenerVigentesFecha(fechaIn, fechaF);
+                ViewBag.Vigente = 1;
+                return View("Index", lista);
+            }catch(Exception ex){
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        public ActionResult Informes(int id){
+            try{
+                var contrato = repositorio.ObtenerPorId(id);
+                var accion = repositorio.Informe(id);
+                if(accion == 1){
+                    ViewBag.Saldo = (contrato.Monto);
+                }else{
+                    ViewBag.Saldo = (contrato.Monto * 2);
+                }
+                return View();
+            }catch(Exception ex){
+                TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
             }
         }
     }

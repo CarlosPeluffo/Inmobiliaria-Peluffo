@@ -5,12 +5,21 @@
 }
 <div class="text-center">
     <h1>Listado de Contratos</h1>
+    @{
+        if(ViewBag.Vigente > 0){
+            <h3>Vigentes</h3>
+        }
+    }
 </div>
-<p>
-    <a class="btn btn-success" asp-action="Create"><i class="far fa-plus-square"></i> Crear Nuevo Contrato</a>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-file-invoice-dollar"></i> Ver Contratos Vigentes</a>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-hotel"></i> Ver Inmuebles Disponibles</a>
-</p>
+@{
+    if(ViewBag.Inmueble < 1){
+        <p>
+            <a class="btn btn-success" asp-action="Create"><i class="far fa-plus-square"></i> Crear Nuevo Contrato</a>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#fechaModal"><i class="fas fa-file-invoice-dollar"></i> Ver Contratos Vigentes</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#InmuebleModal"><i class="fas fa-hotel"></i> Ver Inmuebles Disponibles</button>
+        </p>
+    }
+}
 <table class="table">
     <thead>
         <tr>
@@ -103,7 +112,7 @@
                             </div>
                         }else{
                             <div class="btn-group btn-group-sm" role="group" aria-label="Four group">
-                                <a class="btn btn-primary" asp-action="Informe" asp-route-id="@item.Id" title="Informe">
+                                <a class="btn btn-primary" asp-action="Informes" asp-route-id="@item.Id" title="Informe">
                                     <i class="fas fa-info"></i> Informe
                                 </a>
                             </div>
@@ -113,9 +122,83 @@
             </td>
             <td>
                 <a class="btn btn-success btn-sm" asp-action="Index" asp-controller="Pagos" asp-route-id="@item.Id" title="Pagos">
-                    <i class="fas fa-file-invoice-dollar"></i>Pagos</a>
+                    <i class="fas fa-file-invoice-dollar"></i> Pagos</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+<div>
+    @{
+        if(ViewBag.Inmueble > 0){
+            <a class="btn btn-primary" asp-action="Index" asp-controller="Inmuebles" title="Inmuebles">
+                <i class="fas fa-hotel"></i> Volver a Inmuebles</a>
+        }
+        if(ViewBag.Vigente > 0){
+            <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Contratos" title="Contratos">
+                <i class="fas fa-file-contract"></i> Volver a Contratos</a>
+        }
+    }
+</div>
+<div class="modal fade" id="fechaModal" tabindex="-1" role="dialog" aria-labelledby="fechaModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="fechaModalLabel">Consultar Contratos Vigentes</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Vigentes">
+                        <div class="form-group">
+                            <label >Fecha Desde</label>
+                            <input type="date" name="FechaIn"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Hasta</label>
+                            <input type="date" name="FechaF"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Consultar" class="btn btn-primary" />
+                        </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="InmuebleModal" tabindex="-1" role="dialog" aria-labelledby="InmuebleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="InmuebleModalLabel">Consultar Inmuebles disponibles</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-controller="Inmuebles" asp-action="Disponibles">
+                        <div class="form-group">
+                            <label >Fecha Desde</label>
+                            <input type="date" name="FechaIn"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Hasta</label>
+                            <input type="date" name="FechaF"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Consultar" class="btn btn-primary" />
+                        </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

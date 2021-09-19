@@ -41,7 +41,6 @@ namespace Inmobiliaria_Peluffo.Controllers
                 if(id != 0){
                     var listado = repositorio.ObtenerPorPropietario(id);
                     TempData["Propietario"] = id;
-                    ViewBag.Propietario = id;
                     return View(listado);
                 }
                 TempData["Propietario"] = id;
@@ -201,6 +200,22 @@ namespace Inmobiliaria_Peluffo.Controllers
             {
                 TempData["Mensaje"] = "El Inmueble está asociado a un Contrato. Imposible Eliminar";
                 //TempData["Error"] = ex.Message;
+                TempData["StackTrate"] = ex.StackTrace;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        public ActionResult Disponibles(IFormCollection collection){
+            try
+            {
+                var fechaIn = collection["FechaIn"];
+                var fechaF = collection["FechaF"];
+                var lista = repositorio.ObtenerLibres(fechaIn, fechaF);
+                ViewBag.Disponibles = 1;
+                return View("Index", lista);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
                 TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
             }

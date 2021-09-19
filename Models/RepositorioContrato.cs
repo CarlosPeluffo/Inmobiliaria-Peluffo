@@ -182,5 +182,129 @@ namespace Inmobiliaria_Peluffo.Models
             }
             return res;
         }
+        public IList<Contrato> ObtenerPorInmueble(int id){
+            IList<Contrato> lista = new List<Contrato>();
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql =@"SELECT id_contrato, fecha_inicio, fecha_fin, monto,
+                    cancelado, fecha_cancelado,
+                    c.id_inquilino, c.id_inmueble,
+                    inq.dni, inq.apellido, inq.nombre,
+                    i.direccion, i.uso, i.tipo
+                    FROM contratos c 
+                    INNER JOIN inmuebles i ON c.id_inmueble = i.id_inmueble
+                    INNER JOIN inquilinos inq ON c.id_inquilino = inq.id_inquilino
+                    WHERE c.id_inmueble=@id";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+                    conn.Open();
+                    var reader = comm.ExecuteReader();
+                    while(reader.Read()){
+                        Contrato c = new Contrato{
+                          Id = reader.GetInt32(0),
+                          FechaInicio = reader.GetDateTime(1),
+                          FechaFin = reader.GetDateTime(2),
+                          Monto = reader.GetDouble(3),
+                          Cancelado = reader.GetBoolean(4),
+                          FechaCancelado = reader["fecha_cancelado"] != DBNull.Value ? reader.GetDateTime(5) : null,
+                          InquilinoId = reader.GetInt32(6),
+                          InmuebleId = reader.GetInt32(7),
+                          Inquilino = new Inquilino{
+                              Id = reader.GetInt32(6),
+                              Dni = reader.GetString(8),
+                              Apellido = reader.GetString(9),
+                              Nombre = reader.GetString(10)
+                          },
+                          Inmueble = new Inmueble{
+                              Id = reader.GetInt32(7),
+                              Direccion = reader.GetString(11),
+                              Uso = reader.GetString(12),
+                              Tipo = reader.GetString(13)
+                          },
+                        };
+                        lista.Add(c);
+                    }
+                    conn.Close();
+                }
+            }
+            return lista;
+        }
+        public IList<Contrato> ObtenerVigentesFecha(string a, string b){
+            IList<Contrato> lista = new List<Contrato>();
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql = @"SELECT id_contrato, fecha_inicio, fecha_fin, monto,
+                    cancelado, fecha_cancelado,
+                    c.id_inquilino, c.id_inmueble,
+                    inq.dni, inq.apellido, inq.nombre,
+                    i.direccion, i.uso, i.tipo
+                    FROM contratos c 
+                    INNER JOIN inmuebles i ON c.id_inmueble = i.id_inmueble
+                    INNER JOIN inquilinos inq ON c.id_inquilino = inq.id_inquilino
+                    AND (c.fecha_fin > @fechaInicio AND c.fecha_inicio < @fechaFin)
+                    WHERE c.cancelado = false;";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.Add("fechaInicio", MySqlDbType.Date).Value = a;
+                    comm.Parameters.Add("fechaFin", MySqlDbType.Date).Value = b;
+                    conn.Open();
+                    var reader = comm.ExecuteReader();
+                    while(reader.Read()){
+                        Contrato c = new Contrato{
+                          Id = reader.GetInt32(0),
+                          FechaInicio = reader.GetDateTime(1),
+                          FechaFin = reader.GetDateTime(2),
+                          Monto = reader.GetDouble(3),
+                          Cancelado = reader.GetBoolean(4),
+                          FechaCancelado = reader["fecha_cancelado"] != DBNull.Value ? reader.GetDateTime(5) : null,
+                          InquilinoId = reader.GetInt32(6),
+                          InmuebleId = reader.GetInt32(7),
+                          Inquilino = new Inquilino{
+                              Id = reader.GetInt32(6),
+                              Dni = reader.GetString(8),
+                              Apellido = reader.GetString(9),
+                              Nombre = reader.GetString(10)
+                          },
+                          Inmueble = new Inmueble{
+                              Id = reader.GetInt32(7),
+                              Direccion = reader.GetString(11),
+                              Uso = reader.GetString(12),
+                              Tipo = reader.GetString(13)
+                          },
+                        };
+                        lista.Add(c);
+                    }
+                    conn.Close();
+                }
+            }
+            return lista;
+        }
+        public int Informe(int id){
+            var res = -1;
+            var fin = -1;
+            var cancel = -1;
+            using(MySqlConnection conn = new MySqlConnection(connectionString)){
+                string sql= @"SELECT TIMESTAMPDIFF(DAY, c.fecha_cancelado ,c.fecha_fin) AS dias_transcurridos, 
+                    TIMESTAMPDIFF(DAY, c.fecha_inicio ,c.fecha_fin) AS dias_totales 
+                    FROM contratos c 
+                    WHERE c.id_contrato =@id";
+                using(MySqlCommand comm = new MySqlCommand(sql, conn)){
+                    comm.CommandType = CommandType.Text;
+                    comm.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
+                    conn.Open();
+                    var reader = comm.ExecuteReader();
+                    if(reader.Read()){
+                        cancel = reader.GetInt32(0);
+                        fin = reader.GetInt32(1);
+                    }
+                    conn.Close();
+                }
+            }
+            if(cancel > (fin/2)){
+                res = 1;
+            }else{
+                res = 2;
+            }
+            return res;
+        }
     }
 }

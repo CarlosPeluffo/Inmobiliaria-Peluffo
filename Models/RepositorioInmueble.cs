@@ -224,14 +224,14 @@ namespace Inmobiliaria_Peluffo.Models
         public IList<Inmueble> ObtenerLibres(string a, string b){
             IList<Inmueble> lista = new List<Inmueble>();
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
-                string sql = @"SELECT i.id_inmueble, i.direccion, i.uso, i.tipo
-                        FROM inmuebles i
-                        LEFT JOIN contratos c ON i.id_inmueble = c.id_inmueble 
-                        AND c.fecha_inicio < @fechaInicio
-                        AND c.fecha_fin > @fechaFin
-                        AND c.cancelado = false
-                        AND c.id_inmueble != 0
-                        WHERE c.id_inmueble IS NULL";
+                string sql = @"SELECT i.id_inmueble, i.direccion, i.uso, i.tipo,
+                    i.precio, i.estado
+                    FROM inmuebles i
+                    LEFT JOIN contratos c ON i.id_inmueble = c.id_inmueble 
+                    AND (c.fecha_fin > @fechaInicio AND c.fecha_inicio < @fechaFin)
+                    AND c.cancelado = false
+                    AND c.id_inmueble != 0
+                    WHERE c.id_inmueble IS NULL AND i.estado=true;";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     comm.Parameters.Add("@fechaInicio", MySqlDbType.Date).Value = a;
@@ -243,7 +243,9 @@ namespace Inmobiliaria_Peluffo.Models
                             Id = reader.GetInt32(0),
                             Direccion = reader.GetString(1),
                             Uso = reader.GetString(2),
-                            Tipo = reader.GetString(3)
+                            Tipo = reader.GetString(3),
+                            Precio = reader.GetDouble(4),
+                            Estado = reader.GetBoolean(5)
                         };
                         lista.Add(i);
                     }
