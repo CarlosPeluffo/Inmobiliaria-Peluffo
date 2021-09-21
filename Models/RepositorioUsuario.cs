@@ -42,7 +42,7 @@ namespace Inmobiliaria_Peluffo.Models
         public int Baja(Usuario user){
             int res = -1;
             using(MySqlConnection conn = new MySqlConnection(connectionString)){
-                string sql = @"DELETE usuarios WHERE id_usuario=@id";
+                string sql = @"DELETE FROM usuarios WHERE id_usuario=@id";
                 using(MySqlCommand comm = new MySqlCommand(sql, conn)){
                     comm.CommandType = CommandType.Text;
                     comm.Parameters.AddWithValue("@id", user.Id);

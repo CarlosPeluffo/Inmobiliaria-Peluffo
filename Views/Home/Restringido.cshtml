@@ -2,8 +2,10 @@
     ViewData["Title"] = "Acceso Restringido";
 }
 <h1>@ViewData["Title"]</h1>
-
-<h4>Usted no posee los permisos necesarios para acceder.</h4>
+<div class="text-center">
+    <h3>Usted no posee los permisos necesarios para acceder </h3>
+    <h4>Contactese con un Administrador</h4>
+</div>
 <div>
-    <a asp-action="Index"><i class="far fa-hand-point-left"></i> Volver a Inicio</a>
+    <a class="btn btn-primary" asp-action="Index"><i class="far fa-hand-point-left"></i> Volver a Inicio</a>
 </div>

@@ -44,6 +44,7 @@ namespace Inmobiliaria_Peluffo.Controllers
                     return View(listado);
                 }
                 TempData["Propietario"] = id;
+                ViewBag.Disponibles = -1;
                 var lista = repositorio.ObtenerTodos();
                 return View(lista);
             }

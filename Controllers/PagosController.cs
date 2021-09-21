@@ -42,7 +42,7 @@ namespace Inmobiliaria_Peluffo.Controllers
                     IList<Pago> lista = repositorio.ObtenerTodosPorContrato(id);
                     var entidad = repContr.ObtenerPorId(id);
                     ViewBag.Contrato = id;
-                    ViewBag.Dato = entidad.Inquilino.Dni + " - " + entidad.Inmueble.Direccion;
+                    ViewBag.Dato = entidad.Inquilino.Dni + " - " + entidad.Inmueble.Direccion + "\n" + "Monto: $" + entidad.Monto;
                     TempData["Contrato"] = id;
                     ViewBag.Nro =  lista.Count() + 1 ;
                     return View(lista);

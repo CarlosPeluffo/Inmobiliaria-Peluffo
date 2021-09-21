@@ -220,7 +220,8 @@ namespace Inmobiliaria_Peluffo.Controllers
             }
             catch(Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["Mensaje"] = "El Contrato posee Pagos asociados. Imposible Eliminar";
+                //TempData["Error"] = ex.Message;
                 TempData["StackTrate"] = ex.StackTrace;
                 return RedirectToAction(nameof(Index));
             }
