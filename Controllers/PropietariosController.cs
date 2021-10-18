@@ -1,10 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Inmobiliaria_Peluffo.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +18,12 @@ namespace Inmobiliaria_Peluffo.Controllers
     {
         private readonly IRepositorioPropietario repositorio;
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
 
-        public PropietariosController(IConfiguration configuration, IRepositorioPropietario repositorio)
+        public PropietariosController(IConfiguration configuration, IWebHostEnvironment environment,IRepositorioPropietario repositorio)
         {
             this.configuration = configuration;
+            this.environment = environment;
             this.repositorio = repositorio;
         }
         // GET: Propietarios
@@ -87,7 +92,29 @@ namespace Inmobiliaria_Peluffo.Controllers
             try
             {
                 if(ModelState.IsValid){
-                    repositorio.Alta(p);
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: p.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256/8));
+                    p.Clave = hashed;
+                    int res = repositorio.Alta(p);
+                    if(p.AvatarFile != null && p.Id > 0){
+                        string wwwPath = environment.WebRootPath;
+                        string path = Path.Combine(wwwPath, "UsersFiles");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        string fileName = "photo_" + p.Id + Path.GetExtension(p.AvatarFile.FileName);
+                        string pathCompleto = Path.Combine(path, fileName);
+                        p.Avatar = Path.Combine("/UsersFiles", fileName);
+                        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create)){
+                        p.AvatarFile.CopyTo(stream);
+                        }
+                        repositorio.Modificacion(p);
+                    }
                     TempData["Id"] = p.Id;
                     return RedirectToAction(nameof(Index));
                 }
@@ -125,11 +152,43 @@ namespace Inmobiliaria_Peluffo.Controllers
         // POST: Propietarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Propietario propietario)
+        public ActionResult Edit(int id, Propietario propietario)
         {
             try
             {
-                if(ModelState.IsValid){
+                var OldUser = repositorio.ObtenerPorId(id);
+                if(propietario.Clave == null){
+                    propietario.Clave = OldUser.Clave;
+                }
+                if(propietario.Clave != OldUser.Clave){
+                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: propietario.Clave,
+                            salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                            prf: KeyDerivationPrf.HMACSHA1,
+                            iterationCount: 1000,
+                            numBytesRequested: 256/8));
+                        propietario.Clave = hashed;
+                    }
+                    if(propietario.AvatarFile != null){
+                        string wwwPath = environment.WebRootPath;
+                        string path = Path.Combine(wwwPath, "UsersFiles");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        string fileName = "photo_" + propietario.Id + Path.GetExtension(propietario.AvatarFile.FileName);
+                        string pathCompleto = Path.Combine(path, fileName);
+                        propietario.Avatar = Path.Combine("/UsersFiles", fileName);
+                        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create)){
+                        propietario.AvatarFile.CopyTo(stream);
+                        }
+                    }else{
+                        propietario.Avatar = OldUser.Avatar;
+                    }
+                    repositorio.Modificacion(propietario);
+                    TempData["Mensaje"] = "El Propietario se modificó Correctamente";
+                    return RedirectToAction("Index", "Home");
+                /*if(ModelState.IsValid){
                 repositorio.Modificacion(propietario);
                 TempData["Mensaje"] = "El Propietario se modificó Correctamente";
                 return RedirectToAction(nameof(Index));
@@ -137,7 +196,7 @@ namespace Inmobiliaria_Peluffo.Controllers
                 else{
                     ViewBag.Mensaje = "No se pudo cargar. Propietario inválido";
                     return View(propietario);
-                }
+                }*/
             }
             catch(Exception ex)
             {

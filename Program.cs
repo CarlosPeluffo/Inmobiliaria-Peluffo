@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace Inmobiliaria_Peluffo
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            //CreateHostBuilder(args).Build().Run();
+            CreateKestrel(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,5 +24,20 @@ namespace Inmobiliaria_Peluffo
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+        public static IWebHostBuilder CreateKestrel(string[] args){
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange:true)
+                .Build();
+            var host = new WebHostBuilder()
+                .UseConfiguration(config)
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                //.UseUrls("http://localhost:5000", "https://localhost:5001")
+                .UseUrls("http://*:5000", "http://*:5001")
+                .UseIISIntegration()
+                .UseStartup<Startup>();
+            return host;
+        }
     }
 }

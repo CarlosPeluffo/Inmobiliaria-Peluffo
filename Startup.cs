@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Inmobiliaria_Peluffo.Models;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Pomelo.EntityFrameworkCore.MySql;
+
 
 namespace Inmobiliaria_Peluffo
 {
@@ -30,7 +35,21 @@ namespace Inmobiliaria_Peluffo
                 option.LoginPath = "/Usuarios/Login";
                 option.LogoutPath = "/Usuarios/Logout";
                 option.AccessDeniedPath = "/Home/Restringido";
-            });
+            })
+            .AddJwtBearer(options =>//la api web valida con token
+                {
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["TokenAuthentication:Issuer"],
+                        ValidAudience = Configuration["TokenAuthentication:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(
+                            Configuration["TokenAuthentication:SecretKey"])),
+                    };
+                });
             services.AddAuthorization(option =>{
                 //option.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"));
                 option.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
@@ -49,6 +68,12 @@ namespace Inmobiliaria_Peluffo
             services.AddTransient<IRepositorioInquilino, RepositorioInquilino>();
             services.AddTransient<IRepositorio<Usuario>, RepositorioUsuario>();
             services.AddTransient<IRepositorioUsuario, RepositorioUsuario>();
+            //Entity Framework
+            var connection = Configuration["ConnectionStrings:DefaultConnection"];
+            services.AddDbContext<DataContext>(
+                options => options.UseMySql(
+                    connection, 
+                    ServerVersion.AutoDetect(connection)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -4,6 +4,7 @@ namespace Inmobiliaria_Peluffo.Models
 {
     public class Inmueble
     {
+        [Column ("id_inmueble")]
         [Display(Name = "ID.")]
         public int Id { get; set; }
         [Required]
@@ -14,6 +15,7 @@ namespace Inmobiliaria_Peluffo.Models
         [Required]
         public string Tipo { get; set; }
         [Required]
+        [Column ("cant_ambientes")]
         [Display(Name = "Cantidad de ambientes")]
         public int Ambientes { get; set; }
         [Required]
@@ -22,6 +24,7 @@ namespace Inmobiliaria_Peluffo.Models
         public bool Estado { get; set; }
         [Required]
         [Display(Name = "Propietario")]
+        [Column ("id_propietario")]
         public int PropietarioId { get; set; }
         [ForeignKey(nameof(PropietarioId))]
         public Propietario Propietario { get; set; }

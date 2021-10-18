@@ -6,16 +6,19 @@ namespace Inmobiliaria_Peluffo.Models
 {
     public class Contrato
     {
+        [Column ("id_contrato")]
         [Display(Name = "ID.")]
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Date)]
+        [Column ("fecha_inicio")]
         [FechaInicio(ErrorMessage = "La Fecha de inicio debe ser mayor a la actual")]
         [Display(Name = "Fecha de Inicio")]
         public DateTime FechaInicio { get; set; }
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de Fin")]
+        [Column ("fecha_fin")]
         public DateTime FechaFin { get; set;}
         [Required]
         [Display(Name = "Monto")]
@@ -23,14 +26,17 @@ namespace Inmobiliaria_Peluffo.Models
         public bool Cancelado { get; set; }
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de Cancelación")]
+        [Column ("fecha_cancelado")]
         public DateTime? FechaCancelado { get; set; }
         [Required]
         [Display(Name = "Inquilino")]
+        [Column ("id_inquilino")]
         public int InquilinoId { get; set; }
         [ForeignKey(nameof(InquilinoId))]
         public Inquilino Inquilino { get; set; }
         [Required]
         [Display(Name = "Inmueble")]
+        [Column ("id_inmueble")]
         public int InmuebleId { get; set; }
         [ForeignKey(nameof(InmuebleId))]
         public Inmueble Inmueble { get; set; }
