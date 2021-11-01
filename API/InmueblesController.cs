@@ -1,5 +1,8 @@
+using System.Net.Http;
+using System.Dynamic;
 using System;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using Inmobiliaria_Peluffo.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+
 namespace Inmobiliaria_Peluffo.API
 {
     [Route("api/[controller]")]
@@ -17,10 +22,12 @@ namespace Inmobiliaria_Peluffo.API
     {
         private readonly DataContext context;
         private readonly IConfiguration configuration;
-        public InmueblesController(DataContext context, IConfiguration configuration)
+        private readonly IWebHostEnvironment environment;
+        public InmueblesController(DataContext context, IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.context = context;
             this.configuration = configuration;
+            this.environment = environment;
         }
         [HttpGet] //ActionResult<Inmueble>
         public async Task<IActionResult> Get(){
@@ -51,24 +58,42 @@ namespace Inmobiliaria_Peluffo.API
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] Inmueble inmueble){
+        public async Task<IActionResult> Post([FromBody] Inmueble inmueble){
             try
             {
-                if(ModelState.IsValid){
                     var usuario = User.Identity.Name;
-                    inmueble.PropietarioId = context.propietarios.Single(x => x.Mail == usuario).Id;
-                    context.inmuebles.Add(inmueble);
-                    await context.SaveChangesAsync();
-                    return CreatedAtAction(nameof(Get), new {id = inmueble.Id}, inmueble);
-                }
-                return BadRequest();
+                    if(inmueble.AvatarFile != null){
+                        var stream = new MemoryStream(Convert.FromBase64String(inmueble.AvatarFile));
+                        IFormFile imagen = new FormFile(stream, 0, stream.Length, "inmueble", ".jpg");
+                        string wwwPath = environment.WebRootPath;
+                        string path = Path.Combine(wwwPath, "UsersFiles");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                            string fileName = "photo_" + inmueble.Direccion + Path.GetExtension(imagen.FileName);
+                            string pathCompleto = Path.Combine(path, fileName);
+                            inmueble.Avatar = Path.Combine("/UsersFiles", fileName);
+                            using (FileStream streamF = new FileStream(pathCompleto, FileMode.Create)){
+                            imagen.CopyTo(streamF);
+                        }
+                        inmueble.PropietarioId = context.propietarios.Single(x => x.Mail == usuario).Id;
+                        context.inmuebles.Add(inmueble);
+                        await context.SaveChangesAsync();
+                        return Ok(inmueble);
+                        //return CreatedAtAction(nameof(Get), new {id = inmueble.Id}, inmueble);
+                    }
+                    else
+                    {
+                        return BadRequest("No entra al if");
+                    }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
         }
-        [HttpPut("{id}")]
+        /*[HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromForm] Inmueble inmueble){
             try
             {
@@ -86,15 +111,15 @@ namespace Inmobiliaria_Peluffo.API
             {
                 return BadRequest(ex);
             }
-        }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id){
+        }*/
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id){
             try
             {
                 var usuario = User.Identity.Name;
                 var inmueble = context.inmuebles.Include(x => x.Propietario).FirstOrDefault(x => x.Id == id && x.Propietario.Mail == usuario);
                 if(inmueble != null){
-                    inmueble.Estado = false;
+                    inmueble.Estado = !inmueble.Estado;
                     context.inmuebles.Update(inmueble);
                     await context.SaveChangesAsync();
                     return Ok(inmueble);

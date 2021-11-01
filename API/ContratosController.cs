@@ -31,7 +31,8 @@ namespace Inmobiliaria_Peluffo.API
                 var lista = await context.contratos
                                 .Include(x => x.Inquilino)
                                 .Include(x => x.Inmueble)
-                                .Where(x => x.Inmueble.Propietario.Mail == usuario).ToListAsync();
+                                .Where(x => x.Inmueble.Propietario.Mail == usuario
+                                        && x.Cancelado == false && x.FechaFin > DateTime.Now).ToListAsync();
                 return Ok(lista);
             }
             catch (Exception ex)
@@ -47,7 +48,7 @@ namespace Inmobiliaria_Peluffo.API
                 var contrato = await context.contratos.Include(x => x.Inquilino)
                                     .Include(x => x.Inmueble)
                                     .Where(x => x.Inmueble.Propietario.Mail == usuario)
-                                    .SingleAsync(x => x.Id == id);
+                                    .SingleOrDefaultAsync(x => x.Id == id);
                 return contrato != null ? Ok(contrato) : NotFound();
             }
             catch (Exception ex)

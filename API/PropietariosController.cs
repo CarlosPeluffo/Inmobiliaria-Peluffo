@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -126,13 +127,15 @@ namespace Inmobiliaria_Peluffo.API
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromForm]Propietario entidad){
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] Propietario entidad){
             try
             {
-                if (ModelState.IsValid)
+                var usuario = User.Identity.Name;
+                var prop = contexto.propietarios.AsNoTracking().Single(x => x.Mail == usuario);
+                if (entidad.Mail == usuario)
                 {
-                    entidad.Id = id;
+                    entidad.Id = prop.Id;
                     contexto.propietarios.Update(entidad);
                     await contexto.SaveChangesAsync();
                     return Ok(entidad);

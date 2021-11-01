@@ -33,7 +33,6 @@ namespace Inmobiliaria_Peluffo
                 .UseConfiguration(config)
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                //.UseUrls("http://localhost:5000", "https://localhost:5001")
                 .UseUrls("http://*:5000", "http://*:5001")
                 .UseIISIntegration()
                 .UseStartup<Startup>();

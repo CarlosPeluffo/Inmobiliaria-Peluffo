@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 namespace Inmobiliaria_Peluffo.Models
 {
     public class Inmueble
@@ -22,11 +23,13 @@ namespace Inmobiliaria_Peluffo.Models
         public double Precio { get; set; }
         [Required]
         public bool Estado { get; set; }
-        [Required]
         [Display(Name = "Propietario")]
         [Column ("id_propietario")]
         public int PropietarioId { get; set; }
         [ForeignKey(nameof(PropietarioId))]
         public Propietario Propietario { get; set; }
+        public string Avatar { get; set; }
+        [NotMapped]
+        public string AvatarFile { get; set; }
     }
 }

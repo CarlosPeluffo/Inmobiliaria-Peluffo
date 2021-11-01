@@ -96,6 +96,7 @@ namespace Inmobiliaria_Peluffo.Models
                         };
                         lista.Add(user);
                     }
+                    conn.Close();
                 }
             }
             return lista;
@@ -122,6 +123,7 @@ namespace Inmobiliaria_Peluffo.Models
                             Rol = reader.GetInt32(6)
                         };
                     }
+                    conn.Close();
                 }
             }
             return user;
@@ -147,6 +149,7 @@ namespace Inmobiliaria_Peluffo.Models
                             Rol = reader.GetInt32(6)
                         };
                     }
+                    conn.Close();
                 }
             }
             return user;
